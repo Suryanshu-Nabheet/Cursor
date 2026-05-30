@@ -9,20 +9,6 @@
 
 ---
 
-<div align="center">
-
-![Welcome Screen](./assets/demo/Welcome_Screen.png)
-
-</div>
-
-<div align="center">
-
-![Coding Screen 1](./assets/demo/Coding_Screen.png)
-
-</div>
-
----
-
 ## Features
 
 ### Intelligence First

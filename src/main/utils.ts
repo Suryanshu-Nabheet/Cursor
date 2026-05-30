@@ -1,6 +1,6 @@
 import * as path from 'path'
 import { app } from 'electron'
-import { getPlatformInfo } from '../utils'
+import { getPlatformInfo } from '../platform'
 
 export const resourcesDir = app.isPackaged
     ? path.join(process.resourcesPath)

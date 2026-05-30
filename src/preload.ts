@@ -6,7 +6,7 @@ import {
 } from 'electron'
 import { LSPNotifyMap, LSPRequestMap, Language } from './features/lsp/lspTypes'
 import type { Settings } from './features/window/state'
-import { getPlatformInfo } from './utils'
+import { getPlatformInfo } from './platform'
 
 // import { clientPreloads } from './features/stdioClient';
 

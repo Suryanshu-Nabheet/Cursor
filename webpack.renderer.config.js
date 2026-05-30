@@ -1,3 +1,5 @@
+const path = require('path')
+const webpack = require('webpack')
 const rules = require('./webpack.rules')
 
 const rendererRules = rules.filter((rule) => {
@@ -32,6 +34,11 @@ rendererRules.push({
 
 module.exports = {
     // Put your normal webpack config below here
+    plugins: [
+        new webpack.ProvidePlugin({
+            connector: [path.resolve(__dirname, 'src/connector.ts'), 'connector'],
+        }),
+    ],
     module: {
         rules: rendererRules,
     },

@@ -56,8 +56,12 @@ fi
 print_success "git $(git --version | awk '{print $3}') detected"
 
 print_info "Cleaning old build artifacts..."
-rm -rf .webpack dist out
-print_success "Cleaned old builds"
+if [ -d .webpack ] || [ -d dist ] || [ -d out ]; then
+    rm -rf .webpack dist out
+    print_success "Cleaned old builds"
+else
+    print_info "No build artifacts to clean"
+fi
 
 print_info "Installing npm dependencies..."
 if npm ci; then

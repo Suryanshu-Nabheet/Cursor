@@ -32,6 +32,9 @@ class MainWindow {
             webPreferences: {
                 // @ts-ignore
                 preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
+                contextIsolation: true,
+                nodeIntegration: false,
+                sandbox: false,
                 // TODO - remove this
                 allowRunningInsecureContent: true,
                 webSecurity: false,

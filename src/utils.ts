@@ -1,5 +1,8 @@
 // CodeX is a fully independent IDE
-export const API_ROOT = 'http://localhost:8000'
+import { connector } from './connector'
+import { getPlatformInfo as getPlatformInfoFromPlatform } from './platform'
+
+export { getPlatformInfoFromPlatform as getPlatformInfo }
 export const HOMEPAGE_ROOT = 'http://localhost:8000'
 
 export class ExpectedBackendError extends Error {
@@ -66,41 +69,7 @@ export async function* streamSource(response: Response): AsyncGenerator<any> {
     }
 }
 
-export function getPlatformInfo(): {
-    PLATFORM_DELIMITER: string
-    PLATFORM_META_KEY: string
-    PLATFORM_CM_KEY: string
-    IS_WINDOWS: boolean
-} {
-    let PLATFORM_DELIMITER: string
-    let PLATFORM_META_KEY: string
-    let PLATFORM_CM_KEY: string
-    let IS_WINDOWS: boolean
-
-    if (process.platform === 'win32') {
-        PLATFORM_DELIMITER = '\\'
-        PLATFORM_META_KEY = 'Ctrl+'
-        PLATFORM_CM_KEY = 'Ctrl'
-        IS_WINDOWS = true
-    } else if (process.platform === 'darwin') {
-        PLATFORM_DELIMITER = '/'
-        PLATFORM_META_KEY = '⌘'
-        PLATFORM_CM_KEY = 'Cmd'
-        IS_WINDOWS = false
-    } else {
-        PLATFORM_DELIMITER = '/'
-        PLATFORM_META_KEY = 'Ctrl+'
-        PLATFORM_CM_KEY = 'Ctrl'
-        IS_WINDOWS = false
-    }
-
-    return {
-        PLATFORM_DELIMITER,
-        PLATFORM_META_KEY,
-        PLATFORM_CM_KEY,
-        IS_WINDOWS,
-    }
-}
+export const API_ROOT = 'http://localhost:8000'
 
 export function join(a: string, b: string): string {
     if (a[a.length - 1] === connector.PLATFORM_DELIMITER) {
@@ -115,7 +84,6 @@ export function joinAdvanced(a: string, b: string): string {
         return joinAdvanced(a, b.slice(2))
     }
     if (b.startsWith('../')) {
-        // if a ends with slash
         if (a[a.length - 1] === connector.PLATFORM_DELIMITER) {
             a = a.slice(0, -1)
         }

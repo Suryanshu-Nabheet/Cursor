@@ -1,4 +1,5 @@
 import { store } from '../app/store'
+import { connector } from '../connector'
 import * as gs from './globalSlice'
 import * as gt from './globalThunks'
 import * as cs from './chat/chatSlice'
@@ -7,23 +8,6 @@ import * as ts from './tools/toolSlice'
 ////////
 // GLOBAL LISTENERS
 ////////
-
-// Safe accessor for connector to prevent crash if preload fails
-const getConnector = () => {
-    if (typeof window !== 'undefined' && 'connector' in window) {
-        return (window as any).connector
-    }
-    console.warn('Electron connector not found. Using mock to prevent crash.')
-    // Return a dummy proxy that eats all calls
-    return new Proxy(
-        {},
-        {
-            get: () => () => {},
-        }
-    )
-}
-
-const connector = getConnector()
 
 // @ts-ignore
 connector.registerRenameClick(() => {
@@ -115,28 +99,28 @@ connector.registerLearnCodebase(() => {
     store.dispatch(gs.initializeIndex(null))
 })
 
-// @ts-ignore
-connector.registerFolderWasAdded((evt: any, payload: any) => {
+// @ts-ignore ipc callbacks receive event payloads
+connector.registerFolderWasAdded((_evt: any, payload: any) => {
     store.dispatch(gs.folderWasAdded(payload))
 })
 
 // @ts-ignore
-connector.registerFolderWasDeleted((evt: any, payload: any) => {
+connector.registerFolderWasDeleted((_evt: any, payload: any) => {
     store.dispatch(gs.folderWasDeleted(payload))
 })
 
 // @ts-ignore
-connector.registerFileWasAdded((evt: any, payload: any) => {
+connector.registerFileWasAdded((_evt: any, payload: any) => {
     store.dispatch(gs.fileWasAdded(payload))
 })
 
 // @ts-ignore
-connector.registerFileWasDeleted((evt: any, payload: any) => {
+connector.registerFileWasDeleted((_evt: any, payload: any) => {
     store.dispatch(gs.fileWasDeleted(payload))
 })
 
 // @ts-ignore
-connector.registerFileWasUpdated((evt: any, payload: any) => {
+connector.registerFileWasUpdated((_evt: any, payload: any) => {
     store.dispatch(gs.fileWasUpdated(payload))
 })
 

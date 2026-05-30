@@ -24,6 +24,7 @@ import { getViewId } from '../features/codemirror/codemirrorSelectors'
 import { getCodeMirrorView } from '../features/codemirror/codemirrorSlice'
 import { toggleChatHistory } from '../features/chat/chatSlice'
 import { pressAICommand } from '../features/chat/chatThunks'
+import { connector } from '../connector'
 
 const commandKey = connector.PLATFORM_META_KEY + ''
 
