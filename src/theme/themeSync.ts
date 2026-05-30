@@ -17,6 +17,12 @@ export interface ThemeColors {
     sidebarForeground: string
     activityBarBackground: string
     activityBarForeground: string
+    activityBarInactiveForeground?: string
+    activityBarActiveBackground?: string
+    buttonBackground?: string
+    buttonForeground?: string
+    buttonHoverBackground?: string
+    descriptionForeground?: string
     panelBackground: string
     panelForeground: string
     titleBarBackground: string
@@ -133,7 +139,10 @@ export function applyThemeToRoot(theme: ThemeColors) {
     // Typed text vars - used by theme/index.css references to --text-primary etc.
     root.style.setProperty('--text-primary', theme.foreground)
     root.style.setProperty('--text-secondary', theme.sidebarForeground)
-    root.style.setProperty('--text-tertiary', theme.comment || '#858585')
+    root.style.setProperty(
+        '--text-tertiary',
+        theme.descriptionForeground || theme.comment || '#858585'
+    )
 
     // White/Black helpers - dynamic per theme type
     root.style.setProperty('--white', '#ffffff')
@@ -265,7 +274,7 @@ export function applyThemeToRoot(theme: ThemeColors) {
     )
     root.style.setProperty(
         '--activity-bar-border',
-        theme.activityBarBorder || borderColor
+        theme.activityBarBorder || 'transparent'
     )
     root.style.setProperty('--input-border', borderColor)
     root.style.setProperty('--terminal-border', 'var(--pane-border)')
@@ -329,8 +338,22 @@ export function applyThemeToRoot(theme: ThemeColors) {
     root.style.setProperty('--activity-bar-fg', theme.activityBarForeground)
     root.style.setProperty(
         '--activity-bar-fg-muted',
-        'rgba(255, 255, 255, 0.4)'
+        theme.activityBarInactiveForeground || 'rgba(255, 255, 255, 0.4)'
     )
+    root.style.setProperty(
+        '--activity-bar-active-bg',
+        theme.activityBarActiveBackground || theme.itemHoverBackground
+    )
+    root.style.setProperty(
+        '--activity-bar-hover-bg',
+        theme.itemHoverBackground
+    )
+    root.style.setProperty('--activity-bar-gap', '6px')
+    root.style.setProperty('--activity-bar-padding-x', '16px')
+    root.style.setProperty('--activity-bar-more-gap', '10px')
+    root.style.setProperty('--activity-bar-height', '42px')
+    root.style.setProperty('--activity-bar-item-size', '28px')
+    root.style.setProperty('--activity-bar-icon-size', '20px')
 
     // ═══════════════════════════════════════════════════════════════════════
     // TABS - Cursor IDE / VS Code
@@ -355,8 +378,18 @@ export function applyThemeToRoot(theme: ThemeColors) {
     // ═══════════════════════════════════════════════════════════════════════
     // BUTTONS - Cursor IDE / VS Code
     // ═══════════════════════════════════════════════════════════════════════
-    root.style.setProperty('--button-primary', '#007acc')
-    root.style.setProperty('--button-primary-hover', theme.itemHoverBackground)
+    root.style.setProperty(
+        '--button-primary',
+        theme.buttonBackground || '#007acc'
+    )
+    root.style.setProperty(
+        '--button-primary-fg',
+        theme.buttonForeground || '#ffffff'
+    )
+    root.style.setProperty(
+        '--button-primary-hover',
+        theme.buttonHoverBackground || theme.itemHoverBackground
+    )
     root.style.setProperty('--button-success', '#28a745')
     root.style.setProperty('--button-success-hover', '#218838')
     root.style.setProperty('--button-danger', '#dc3545')
@@ -508,6 +541,12 @@ export function syncThemeFromSettings(
         sidebarForeground: c.sidebarForeground || '#e5e5e5',
         activityBarBackground: c.activityBarBackground || '#141414',
         activityBarForeground: c.activityBarForeground || '#e5e5e5',
+        activityBarInactiveForeground: c.activityBarInactiveForeground,
+        activityBarActiveBackground: c.activityBarActiveBackground,
+        buttonBackground: c.buttonBackground,
+        buttonForeground: c.buttonForeground,
+        buttonHoverBackground: c.buttonHoverBackground,
+        descriptionForeground: c.descriptionForeground,
         panelBackground: c.panelBackground || '#0a0a0a',
         panelForeground: c.panelForeground || '#e5e5e5',
         titleBarBackground: c.titleBarBackground || '#121212',

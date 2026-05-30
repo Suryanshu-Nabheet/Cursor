@@ -274,8 +274,8 @@ export function App() {
                 {screenState === 'normal' && (
                     <>
                         <div
-                            className={`app__lefttopwrapper ${
-                                leftSideExpanded ? 'flex' : 'hidden'
+                            className={`app__lefttopwrapper${
+                                leftSideExpanded ? '' : ' hidden'
                             }`}
                             style={{ width: leftSideWidth + 'px' }}
                         >

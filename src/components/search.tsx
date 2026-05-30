@@ -88,8 +88,8 @@ export const LeftSide = () => {
         }
     }
     return (
-        <div className="w-full h-full flex flex-col bg-[var(--sidebar-bg)] border-r border-[var(--sidebar-border)]">
-            <div className="flex-1 min-h-0 overflow-hidden relative">
+        <div className="app__sidebar-panel">
+            <div className="app__sidebar-panel__content">
                 {renderTabContent()}
             </div>
         </div>

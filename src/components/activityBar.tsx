@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import {
     getLeftTab,
@@ -14,141 +14,126 @@ import {
 } from '../features/tools/toolSlice'
 import { Codicon } from './codicon'
 
+type ActivityTab = 'filetree' | 'search' | 'git' | 'extensions'
+
+const NAV_ITEMS: { id: ActivityTab; icon: string; title: string }[] = [
+    { id: 'filetree', icon: 'files', title: 'Explorer' },
+    { id: 'search', icon: 'search', title: 'Search' },
+    { id: 'git', icon: 'source-control', title: 'Source Control' },
+    { id: 'extensions', icon: 'extensions', title: 'Extensions' },
+]
+
+const MORE_ITEMS = [
+    { id: 'debug', label: 'Run and Debug', disabled: true },
+    { id: 'remote', label: 'Remote Explorer', disabled: true },
+] as const
+
 export const ActivityBar = () => {
     const dispatch = useAppDispatch()
     const activeTab = useAppSelector(getLeftTab)
     const isExpanded = useAppSelector(getLeftSideExpanded)
     const [showMore, setShowMore] = useState(false)
+    const moreRef = useRef<HTMLDivElement>(null)
 
-    const handleTabClick = (
-        tab: 'filetree' | 'search' | 'git' | 'extensions'
-    ) => {
+    useEffect(() => {
+        if (!showMore) return
+
+        const onPointerDown = (event: MouseEvent) => {
+            if (
+                moreRef.current &&
+                !moreRef.current.contains(event.target as Node)
+            ) {
+                setShowMore(false)
+            }
+        }
+
+        document.addEventListener('mousedown', onPointerDown)
+        return () => document.removeEventListener('mousedown', onPointerDown)
+    }, [showMore])
+
+    const handleTabClick = (tab: ActivityTab) => {
         if (activeTab === tab && isExpanded) {
             dispatch(collapseLeftSide())
-        } else {
-            if (tab === 'filetree') {
-                dispatch(openFileTree())
-            } else if (tab === 'search') {
-                dispatch(openSearch())
-            } else if (tab === 'git') {
-                dispatch(openGit())
-            } else if (tab === 'extensions') {
-                dispatch(openExtensions())
-            }
-            dispatch(expandLeftSide())
-            setShowMore(false)
+            return
         }
+
+        if (tab === 'filetree') dispatch(openFileTree())
+        else if (tab === 'search') dispatch(openSearch())
+        else if (tab === 'git') dispatch(openGit())
+        else if (tab === 'extensions') dispatch(openExtensions())
+
+        dispatch(expandLeftSide())
+        setShowMore(false)
     }
 
-    const navItems = [
-        { id: 'filetree', icon: 'files', title: 'Explorer' },
-        { id: 'search', icon: 'search', title: 'Search' },
-        { id: 'git', icon: 'source-control', title: 'Source Control' },
-        { id: 'extensions', icon: 'extensions', title: 'Extensions' },
-    ]
+    const isActive = (tab: ActivityTab) => activeTab === tab && isExpanded
 
     return (
-        <div className="w-full h-[42px] min-h-[42px] bg-[var(--sidebar-bg)] flex items-center justify-center relative flex-shrink-0 z-[100] border-b border-[var(--ui-border)]">
-            {/* Centered Button Container */}
-            <div className="flex items-center gap-1">
-                {navItems.map((item) => (
+        <nav
+            className="activity-bar"
+            aria-label="Primary sidebar views"
+            ref={moreRef}
+        >
+            <div className="activity-bar__nav" role="tablist">
+                {NAV_ITEMS.map((item) => (
                     <button
                         key={item.id}
-                        className={`
-                            w-[28px] h-[28px] flex items-center justify-center rounded-[5px] cursor-pointer transition-all duration-200
-                            ${
-                                activeTab === item.id && isExpanded
-                                    ? 'bg-[var(--ui-active,rgba(255,255,255,0.1))] text-[var(--ui-fg)]'
-                                    : 'text-[var(--ui-fg-muted)] hover:text-[var(--ui-fg)] hover:bg-[var(--ui-hover,rgba(255,255,255,0.08))]'
-                            }
-                        `}
-                        onClick={() => handleTabClick(item.id as any)}
-                        title={item.title}
                         type="button"
+                        role="tab"
+                        aria-selected={isActive(item.id)}
+                        aria-label={item.title}
+                        title={item.title}
+                        className={`activity-bar__item${
+                            isActive(item.id) ? ' active' : ''
+                        }`}
+                        onClick={() => handleTabClick(item.id)}
                     >
                         <Codicon
                             name={item.icon}
-                            style={{ fontSize: '17px' }}
+                            className="activity-bar__icon"
                         />
                     </button>
                 ))}
 
-                {/* Divider */}
-                <div className="w-[1px] h-4 bg-[var(--ui-border)] mx-1 opacity-20" />
-
-                {/* More Menu Toggle */}
                 <button
-                    className={`
-                        w-[28px] h-[28px] flex items-center justify-center rounded-[5px] cursor-pointer transition-all duration-200
-                        ${
-                            showMore
-                                ? 'bg-[var(--ui-active,rgba(255,255,255,0.1))] text-[var(--ui-fg)]'
-                                : 'text-[var(--ui-fg-muted)] hover:text-[var(--ui-fg)] hover:bg-[var(--ui-hover,rgba(255,255,255,0.08))]'
-                        }
-                    `}
-                    onClick={() => setShowMore(!showMore)}
-                    title="More Views"
                     type="button"
+                    aria-label="More views"
+                    aria-expanded={showMore}
+                    title="More Views"
+                    className={`activity-bar__item activity-bar__item--more${
+                        showMore ? ' active' : ''
+                    }`}
+                    onClick={() => setShowMore((open) => !open)}
                 >
-                    <Codicon name="chevron-down" style={{ fontSize: '12px' }} />
+                    <Codicon
+                        name="chevron-down"
+                        className="activity-bar__icon activity-bar__icon--chevron"
+                    />
                 </button>
             </div>
 
-            {/* Dropdown Menu - High z-index to prevent being hidden */}
             {showMore && (
-                <>
-                    {/* Backdrop to close menu */}
-                    <div
-                        className="fixed inset-0"
-                        style={{ zIndex: 9998 }}
-                        onClick={() => setShowMore(false)}
-                    />
-
-                    {/* Menu - Matches sidebar width exactly */}
-                    <div
-                        className="absolute w-56 bg-[var(--sidebar-bg)] border border-[var(--ui-border)] rounded-lg shadow-2xl flex flex-col"
-                        style={{
-                            top: '46px',
-                            left: '50%',
-                            transform: 'translateX(-50%)',
-                            zIndex: 9999,
-                            background: 'var(--ui-bg-elevated)',
-                            backdropFilter: 'blur(12px)',
-                        }}
-                    >
+                <div className="activity-bar__menu" role="menu">
+                    {MORE_ITEMS.map((item) => (
                         <button
-                            className="px-4 py-3 hover:bg-[var(--ui-hover)] text-xs text-[var(--ui-fg)] flex items-center justify-between transition-colors text-left opacity-50 cursor-not-allowed first:rounded-t-lg"
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setShowMore(false)
-                            }}
+                            key={item.id}
                             type="button"
-                            title="Coming soon"
-                            disabled
+                            role="menuitem"
+                            className="activity-bar__menu-item"
+                            disabled={item.disabled}
+                            title={item.disabled ? 'Coming soon' : item.label}
+                            onClick={() => setShowMore(false)}
                         >
-                            <span>Run and Debug</span>
-                            <span className="text-[9px] text-[var(--ui-fg-muted)]">
-                                Soon
-                            </span>
+                            <span>{item.label}</span>
+                            {item.disabled && (
+                                <span className="activity-bar__menu-badge">
+                                    Soon
+                                </span>
+                            )}
                         </button>
-                        <button
-                            className="px-4 py-3 hover:bg-[var(--ui-hover)] text-xs text-[var(--ui-fg)] flex items-center justify-between transition-colors text-left opacity-50 cursor-not-allowed last:rounded-b-lg"
-                            onClick={(e) => {
-                                e.preventDefault()
-                                setShowMore(false)
-                            }}
-                            type="button"
-                            title="Coming soon"
-                            disabled
-                        >
-                            <span>Remote Explorer</span>
-                            <span className="text-[9px] text-[var(--ui-fg-muted)]">
-                                Soon
-                            </span>
-                        </button>
-                    </div>
-                </>
+                    ))}
+                </div>
             )}
-        </div>
+        </nav>
     )
 }

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { ExplorerEmptyState } from './explorerEmptyState'
 
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { Codicon } from './codicon'
@@ -276,7 +277,7 @@ export function FileTree() {
     }, [dispatch])
 
     if (!rootFolder) {
-        return <div className="p-4 text-gray-400">No folder opened</div>
+        return <ExplorerEmptyState />
     }
 
     const toggleOpen = () => {
@@ -285,17 +286,9 @@ export function FileTree() {
     }
 
     return (
-        <div
-            className="w-full h-full"
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                backgroundColor: 'var(--sidebar-bg)',
-                minHeight: 0,
-            }}
-        >
+        <div className="app__sidebar-panel__view">
             {/* Sticky project header */}
-            <div className="pane-header relative">
+            <div className="pane-header">
                 {/* Left: Project Name */}
                 <div
                     className="flex items-center gap-2 flex-1 min-w-0 cursor-pointer"

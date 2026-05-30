@@ -70,6 +70,12 @@ export interface ThemeData {
         sidebarForeground: string
         activityBarBackground: string
         activityBarForeground: string
+        activityBarInactiveForeground?: string
+        activityBarActiveBackground?: string
+        buttonBackground?: string
+        buttonForeground?: string
+        buttonHoverBackground?: string
+        descriptionForeground?: string
         panelBackground: string
         panelForeground: string
         titleBarBackground: string
@@ -184,6 +190,16 @@ function mapThemeToThemeData(theme: any): ThemeData {
                 colors['activityBar.background'] || '#141414',
             activityBarForeground:
                 colors['activityBar.foreground'] || '#e5e5e5',
+            activityBarInactiveForeground:
+                colors['activityBar.inactiveForeground'],
+            activityBarActiveBackground:
+                colors['activityBar.activeBackground'] ||
+                colors['list.activeSelectionBackground'],
+
+            buttonBackground: colors['button.background'],
+            buttonForeground: colors['button.foreground'],
+            buttonHoverBackground: colors['button.hoverBackground'],
+            descriptionForeground: colors['descriptionForeground'],
 
             // Panel / Terminal
             panelBackground:

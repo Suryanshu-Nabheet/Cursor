@@ -176,6 +176,21 @@ export const COMPONENT_TOKENS = {
         aiButtonHover: '#66b2ff',
     },
 
+    // Activity Bar
+    activityBar: {
+        background: BASE_TOKENS.anysphere.activityBarBg,
+        foreground: 'var(--activity-bar-fg)',
+        foregroundMuted: 'var(--activity-bar-fg-muted)',
+        activeBackground: 'var(--activity-bar-active-bg)',
+        hoverBackground: 'var(--activity-bar-hover-bg)',
+        border: 'var(--activity-bar-border)',
+        itemSize: 'var(--activity-bar-item-size)',
+        iconSize: 'var(--activity-bar-icon-size)',
+        height: 'var(--activity-bar-height)',
+        gap: 'var(--activity-bar-gap)',
+        paddingX: 'var(--activity-bar-padding-x)',
+    },
+
     // Sidebar / File Tree
     sidebar: {
         background: BASE_TOKENS.anysphere.sidebarBg,
@@ -218,6 +233,7 @@ export const COMPONENT_TOKENS = {
     // Buttons
     button: {
         primary: 'var(--button-primary)',
+        primaryForeground: 'var(--button-primary-fg)',
         primaryHover: 'var(--button-primary-hover)',
         primaryActive: 'var(--button-primary-hover)', // Fallback
 

@@ -92,10 +92,18 @@
     --sidebar-border: var(--black-border);
 
     /* Activity Bar */
-    --activity-bar-bg: var(--black-elevated);
+    --activity-bar-bg: var(--sidebar-bg);
     --activity-bar-fg: var(--text-primary);
     --activity-bar-fg-muted: var(--text-tertiary);
-    --activity-bar-border: var(--black-border);
+    --activity-bar-active-bg: var(--black-subtle);
+    --activity-bar-hover-bg: var(--black-subtle);
+    --activity-bar-border: transparent;
+    --activity-bar-height: 42px;
+    --activity-bar-item-size: 28px;
+    --activity-bar-icon-size: 20px;
+    --activity-bar-gap: 6px;
+    --activity-bar-padding-x: 16px;
+    --activity-bar-more-gap: 10px;
 
     /* Tabs */
     --tab-bg: var(--black-pure);
@@ -126,6 +134,7 @@
     --accent-hover: var(--blue-dim);
     --accent-active: #1d4ed8;
     --button-primary: var(--blue-accent);
+    --button-primary-fg: var(--white);
     --button-primary-hover: var(--blue-dim);
     --button-secondary: var(--black-elevated);
     --button-secondary-hover: var(--black-subtle);
