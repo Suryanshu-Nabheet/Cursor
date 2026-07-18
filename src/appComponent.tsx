@@ -8,9 +8,8 @@ import * as ts from './features/tools/toolSlice'
 import * as csel from './features/chat/chatSelectors'
 import * as tsel from './features/tools/toolSelectors'
 import * as ssel from './features/settings/settingsSelectors'
-import { changeSettings } from './features/settings/settingsSlice'
+import { toggleSettings } from './features/settings/settingsSlice'
 import { initializeExtensions } from './features/extensions/extensionsSlice'
-import { store } from './app/store'
 import { syncThemeFromSettings } from './theme/themeSync'
 
 import {
@@ -19,8 +18,7 @@ import {
     getRootPath,
 } from './features/selectors'
 
-import { ChatPopup, CommandBar } from './components/markdown'
-import { SettingsPopup } from './components/settingsPane'
+import { CommandBar } from './components/markdown'
 import { FeedbackArea, LeftSide } from './components/search'
 import { WelcomeScreen } from './components/welcomeScreen'
 import { TitleBar } from './components/titlebar'
@@ -34,6 +32,7 @@ import { ActivityBar } from './components/activityBar'
 import { StatusBar } from './components/statusBar'
 import { AIChatSidebar } from './components/aiChatSidebar'
 import CommandPalettes from './components/commandPalette'
+import { SettingsEditor } from './features/settings'
 
 export function App() {
     const dispatch = useAppDispatch()
@@ -42,6 +41,7 @@ export function App() {
     const leftSideExpanded = useAppSelector(tsel.getLeftSideExpanded)
     const aiSidebarOpen = useAppSelector(tsel.aiCommandPaletteTriggeredSelector)
     const welcomeDismissed = useAppSelector(tsel.getWelcomeDismissed)
+    const isSettingsOpen = useAppSelector(ssel.getSettingsIsOpen)
 
     const paneSplits = useAppSelector(getPaneStateBySplits)
 
@@ -101,7 +101,15 @@ export function App() {
                     return
                 }
 
-                // Cmd+H - Open Settings
+                // Cmd+, — Settings (in-editor)
+                if (e.key === ',') {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dispatch(toggleSettings())
+                    return
+                }
+
+                // Cmd+H - Chat history
                 if (e.key === 'h') {
                     e.preventDefault()
                     e.stopPropagation()
@@ -229,35 +237,6 @@ export function App() {
         (state) => state.extensionsState.availableThemes
     )
 
-    // Initialize settings with .env fallback
-    useEffect(() => {
-        const initializeSettings = async () => {
-            const currentSettings =
-                store.getState().settingsState?.settings || {}
-
-            // If no provider is set, get default from .env
-            if (
-                !currentSettings.aiProvider &&
-                typeof window !== 'undefined' &&
-                (window as any).connector
-            ) {
-                try {
-                    const defaultProvider = await (
-                        window as any
-                    ).connector.getDefaultAIProvider()
-                    if (defaultProvider) {
-                        dispatch(
-                            changeSettings({ aiProvider: defaultProvider })
-                        )
-                    }
-                } catch (error) {
-                    // Ignore errors - .env might not be available
-                }
-            }
-        }
-        initializeSettings()
-    }, [dispatch])
-
     // Global Settings Applicator
     useEffect(() => {
         const root = document.documentElement
@@ -312,11 +291,20 @@ export function App() {
                         )}
                         <div className="app__righttopwrapper">
                             <div className="app__paneholderwrapper">
-                                <PaneHolder paneIds={paneSplits} depth={1} />
+                                {isSettingsOpen ? (
+                                    <SettingsEditor />
+                                ) : (
+                                    <PaneHolder
+                                        paneIds={paneSplits}
+                                        depth={1}
+                                    />
+                                )}
                             </div>
-                            <div className="app__terminalwrapper">
-                                <BottomTerminal />
-                            </div>
+                            {!isSettingsOpen && (
+                                <div className="app__terminalwrapper">
+                                    <BottomTerminal />
+                                </div>
+                            )}
                         </div>
                         {/* Right Sidebar for AI Chat */}
                         {aiSidebarOpen && (
@@ -337,9 +325,7 @@ export function App() {
                         )}
 
                         <CommandPalettes />
-                        <ChatPopup />
                         <ErrorPopup />
-                        <SettingsPopup />
                         <FeedbackArea />
                         <SSHPopup />
                         <GitClonePopup />

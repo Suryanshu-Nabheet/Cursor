@@ -72,8 +72,7 @@ export const DEFAULT_MODELS: Record<AIProvider, string[]> = {
 }
 
 /**
- * Get the active AI provider configuration
- * Priority: User Settings > .env file > null
+ * Get the active AI provider configuration from user Settings (BYOK).
  */
 export function getActiveProvider(
     settings: AISettings
@@ -151,102 +150,6 @@ export function getActiveProvider(
     }
 
     return null
-}
-
-/**
- * Get active provider with .env fallback (async version for IPC)
- */
-export async function getActiveProviderWithEnv(
-    settings: AISettings,
-    getEnvKey: (provider: AIProvider) => Promise<string | null>
-): Promise<AIProviderConfig | null> {
-    const provider = settings.provider
-
-    switch (provider) {
-        case 'openai': {
-            // User's own key ONLY
-            if (settings.openai?.enabled && settings.openai?.apiKey) {
-                return {
-                    provider: 'openai',
-                    apiKey: settings.openai.apiKey,
-                    enabled: true,
-                    defaultModel:
-                        settings.openai.model || DEFAULT_MODELS.openai[0],
-                }
-            }
-            break
-        }
-        case 'openrouter': {
-            if (settings.openrouter?.enabled && settings.openrouter?.apiKey) {
-                return {
-                    provider: 'openrouter',
-                    apiKey: settings.openrouter.apiKey,
-                    enabled: true,
-                    defaultModel:
-                        settings.openrouter.model ||
-                        DEFAULT_MODELS.openrouter[0],
-                }
-            }
-            // Company allows OpenRouter via .env
-            const openrouterEnvKey = await getEnvKey('openrouter')
-            if (openrouterEnvKey) {
-                return {
-                    provider: 'openrouter',
-                    apiKey: openrouterEnvKey,
-                    enabled: true,
-                    defaultModel:
-                        settings.openrouter?.model ||
-                        DEFAULT_MODELS.openrouter[0],
-                }
-            }
-            break
-        }
-        case 'gemini': {
-            // User's own key ONLY
-            if (settings.gemini?.enabled && settings.gemini?.apiKey) {
-                return {
-                    provider: 'gemini',
-                    apiKey: settings.gemini.apiKey,
-                    enabled: true,
-                    defaultModel:
-                        settings.gemini.model || DEFAULT_MODELS.gemini[0],
-                }
-            }
-            break
-        }
-        case 'claude': {
-            // User's own key ONLY
-            if (settings.claude?.enabled && settings.claude?.apiKey) {
-                return {
-                    provider: 'claude',
-                    apiKey: settings.claude.apiKey,
-                    enabled: true,
-                    defaultModel:
-                        settings.claude.model || DEFAULT_MODELS.claude[0],
-                }
-            }
-            break
-        }
-        case 'ollama': {
-            return {
-                provider: 'ollama',
-                apiKey: 'ollama',
-                enabled: true,
-                baseUrl: settings.ollama?.baseUrl || 'http://localhost:11434',
-                defaultModel:
-                    settings.ollama?.model || DEFAULT_MODELS.ollama[0],
-            }
-        }
-    }
-
-    // Fallback to Ollama if no other provider is configured
-    return {
-        provider: 'ollama',
-        apiKey: 'ollama',
-        enabled: true,
-        baseUrl: settings.ollama?.baseUrl || 'http://localhost:11434',
-        defaultModel: settings.ollama?.model || DEFAULT_MODELS.ollama[0],
-    }
 }
 
 /**

@@ -337,9 +337,20 @@ export interface Settings {
     ollamaBaseUrl?: string
     // General
     tabSize?: string
+    insertSpaces?: boolean
+    detectIndentation?: boolean
     theme?: string
     fontFamily?: string
     fontSize?: string
+    showLineNumbers?: boolean
+    showIndentGuides?: boolean
+    highlightActiveLine?: boolean
+    showScrollbarDiagnostics?: boolean
+    autoSave?: 'off' | 'afterDelay'
+    autoSaveDelay?: number
+    // AI extras
+    workspaceContextEnabled?: boolean
+    aiCommitDraftEnabled?: boolean
     // Inline AI completion (Copilot-style ghost text)
     inlineCompletionEnabled?: boolean
     inlineCompletionDelay?: number
@@ -349,7 +360,7 @@ export interface Settings {
 export interface SettingsState {
     settings: Settings
     isOpen: boolean
-    activeTab: 'General' | 'AI' | 'Languages' | 'Account'
+    activeTab: 'General' | 'AI' | 'Languages' | 'About'
 }
 
 export interface LineChange {
@@ -446,17 +457,29 @@ export const initialChatState: ChatState = {
 
 export const initialSettingsState = {
     isOpen: false,
-    activeTab: 'General' as 'General' | 'AI' | 'Languages' | 'Account',
+    activeTab: 'General' as 'General' | 'AI' | 'Languages' | 'About',
     settings: {
         keyBindings: 'none',
         useFour: 'disabled',
         textWrapping: 'disabled',
         tabSize: '4',
+        insertSpaces: true,
+        detectIndentation: false,
         theme: 'cursor-dark',
         contextType: 'none',
+        fontFamily: 'JetBrains Mono',
+        fontSize: '13',
+        showLineNumbers: true,
+        showIndentGuides: true,
+        highlightActiveLine: true,
+        showScrollbarDiagnostics: true,
+        autoSave: 'off',
+        autoSaveDelay: 1000,
         aiProvider: 'ollama',
         ollamaModel: 'qwen2.5-coder:1.5b',
         ollamaBaseUrl: 'http://localhost:11434',
+        workspaceContextEnabled: true,
+        aiCommitDraftEnabled: true,
         inlineCompletionEnabled: true,
         inlineCompletionDelay: 300,
         inlineCompletionMaxTokens: 64,

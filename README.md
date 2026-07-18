@@ -1,9 +1,13 @@
 # Cursor IDE
 
+<p align="center">
+  <img src="public/demo.png" alt="Cursor IDE demo" style="max-width: 100%; border-radius: 8px;" />
+</p>
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-emerald.svg?style=flat-square)](https://github.com/Suryanshu-Nabheet/cursor)
 
-A lightweight Electron + CodeMirror IDE with AI completion, LSP, terminal, and OpenVSX extensions. Offline-first (Ollama by default).
+A lightweight Electron + CodeMirror IDE with AI completion, LSP, terminal, and OpenVSX extensions. Offline-first (Ollama by default). Bring Your Own Key (BYOK) — no company AI backend or `.env` API keys.
 
 Copyright (c) 2026 Suryanshu Nabheet. MIT License.
 
@@ -62,7 +66,7 @@ Windows: `npm run setup:win`, `clean:win`, `reset:win`, `doctor:win`.
 
 Electron · React 18 · Redux Toolkit · CodeMirror 6 · TypeScript · Tailwind
 
-AI providers: Ollama (default), OpenAI, Claude, Gemini, OpenRouter — configure in Settings.
+AI providers: Ollama (default), OpenAI, Claude, Gemini, OpenRouter — configure keys in Settings (BYOK).
 
 ---
 

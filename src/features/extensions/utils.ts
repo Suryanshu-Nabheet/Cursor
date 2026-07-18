@@ -4,7 +4,6 @@ import { getCurrentTab, getFilePath, getFocusedTab, getTab } from '../selectors'
 import { getTests, selectHasTests } from '../tests/testSelectors'
 import { TestData } from '../tests/testSlice'
 import { CommentFunction } from '../window/state'
-import { API_ROOT, isLegacyBackendEnabled } from '../../utils'
 import { StateEffect } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 import { paneIdField } from './storePane'
@@ -250,28 +249,13 @@ export function findDeclarationGivenDefinition(node: SyntaxNode) {
     return null
 }
 
-export async function getCommentSingle(data: {
+export async function getCommentSingle(_data: {
     filename: string
     functionBody: string
     functionName: string
 }) {
-    if (!isLegacyBackendEnabled()) {
-        return { comment: null }
-    }
-
-    try {
-        const response = await fetch(`${API_ROOT}/commentSingle`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-        if (!response.ok) return { comment: null }
-        return (await response.json()) as { comment: string | null }
-    } catch {
-        return { comment: null }
-    }
+    // No remote comment backend — comments are local-only.
+    return { comment: null }
 }
 
 export function getCachedFileName() {

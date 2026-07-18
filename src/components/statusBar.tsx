@@ -141,10 +141,18 @@ export const StatusBar = () => {
                 language,
                 encoding: 'UTF-8',
                 lineEnding: 'LF',
-                indentation: `Spaces: ${settings.tabSize || 4}`,
+                indentation:
+                    settings.insertSpaces === false
+                        ? `Tabs: ${settings.tabSize || 4}`
+                        : `Spaces: ${settings.tabSize || 4}`,
             })
         }
-    }, [activeFileId])
+    }, [
+        activeFileId,
+        settings.tabSize,
+        settings.insertSpaces,
+        state.files,
+    ])
 
     // Poll Git info
     useEffect(() => {

@@ -1717,7 +1717,7 @@ export const diffExtension = [
                             const isFinished = lastBotMessage.finished
                             if (isInterrupted && isFinished) {
                                 // We just dont do anything and return true
-                                // store.dispatch(cs.continueGeneration(diffId))
+                                // remote continueGeneration removed
                                 return true
                             }
                         }

@@ -20,7 +20,7 @@ export const settingsSlice = createSlice({
         },
         setSettingsTab(
             settingsState: SettingsState,
-            action: PayloadAction<'General' | 'AI' | 'Languages' | 'Account'>
+            action: PayloadAction<'General' | 'AI' | 'Languages' | 'About'>
         ) {
             settingsState.activeTab = action.payload
             settingsState.isOpen = true

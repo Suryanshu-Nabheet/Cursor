@@ -1,6 +1,6 @@
 /**
  * Client-side AI streaming for Cmd+K command bar (edit / generate).
- * Replaces the legacy localhost:8000 backend for inline commands.
+ * Uses BYOK Settings keys or Ollama — no remote company backend.
  */
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { getActiveProviderAPIKey } from './apiKeyUtils'

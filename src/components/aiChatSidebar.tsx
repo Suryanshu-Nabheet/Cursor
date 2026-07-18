@@ -15,7 +15,7 @@ import { buildWorkspaceContext, injectWorkspaceContext } from '../features/ai/wo
 import { store } from '../app/store'
 import { openFile, fileWasUpdated } from '../features/globalSlice'
 import * as ssel from '../features/settings/settingsSelectors'
-import { toggleSettings, setSettingsTab } from '../features/settings/settingsSlice'
+import { setSettingsTab } from '../features/settings/settingsSlice'
 import { getActiveFileId } from '../features/window/paneUtils'
 import { getPathForFileId } from '../features/window/fileUtils'
 import { FullState } from '../features/window/state'
@@ -741,9 +741,10 @@ export function AIChatSidebar() {
             activeTextSegmentIdRef.current = null
             activeToolsSegmentIdRef.current = null
 
-            const workspaceContext = await buildWorkspaceContext(
-                store.getState() as FullState
-            )
+            const workspaceContext =
+                settings.workspaceContextEnabled === false
+                    ? ''
+                    : await buildWorkspaceContext(store.getState() as FullState)
             const messagesWithContext = injectWorkspaceContext(
                 currentMessages,
                 workspaceContext
@@ -937,7 +938,11 @@ export function AIChatSidebar() {
                             role: 'tool', tool_call_id: tr.toolCallId, name: tr.name, content: tr.result,
                         })),
                     ],
-                    await buildWorkspaceContext(store.getState() as FullState)
+                    settings.workspaceContextEnabled === false
+                        ? ''
+                        : await buildWorkspaceContext(
+                              store.getState() as FullState
+                          )
                 )
 
                 await processTurn(nextMessages, currentModel, provider, apiKey)
@@ -962,7 +967,6 @@ export function AIChatSidebar() {
         if (!trimmedPrompt) return
         if (!isAIConfigured) {
             dispatch(setSettingsTab('AI'))
-            dispatch(toggleSettings())
             return
         }
 
@@ -1003,9 +1007,12 @@ export function AIChatSidebar() {
         try {
             const { model, provider, apiKey } = await getModelToUse()
 
-            const workspaceContext = await buildWorkspaceContext(
-                store.getState() as FullState
-            )
+            const workspaceContext =
+                settings.workspaceContextEnabled === false
+                    ? ''
+                    : await buildWorkspaceContext(
+                          store.getState() as FullState
+                      )
             const apiMessages = injectWorkspaceContext(
                 [
                     ...history.flatMap((m): any[] => {
@@ -1153,8 +1160,7 @@ export function AIChatSidebar() {
 
     const handleClose = useCallback(() => dispatch(ts.untriggerAICommandPalette()), [dispatch])
     const handleConfigureAI = useCallback(() => {
-        dispatch(setSettingsTab('AI'))
-        dispatch(toggleSettings())
+            dispatch(setSettingsTab('AI'))
     }, [dispatch])
 
     const activeFileName = activeFilePath?.split('/').pop()

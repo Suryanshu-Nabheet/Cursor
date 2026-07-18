@@ -3,8 +3,8 @@ import { connector } from './connector'
 import { getPlatformInfo as getPlatformInfoFromPlatform } from './platform'
 
 export { getPlatformInfoFromPlatform as getPlatformInfo }
-export const HOMEPAGE_ROOT = 'http://localhost:8000'
 
+/** User-facing AI / provider errors (BYOK client-side). */
 export class ExpectedBackendError extends Error {
     public title: string | null = null
 }
@@ -29,54 +29,6 @@ export class BadModelError extends ExpectedBackendError {
 }
 
 export type ExpectedError = BadOpenAIAPIKeyError | BadModelError
-
-export async function* streamSource(response: Response): AsyncGenerator<any> {
-    // Check if the response is an event-stream
-    if (
-        response.headers.get('content-type') ==
-        'text/event-stream; charset=utf-8'
-    ) {
-        // Create a reader to read the response body as a stream
-        // const reader = response.body.getReader();
-        // Fix the above error: `response.body is possibly null`
-        const reader = response.body!.getReader()
-        // Create a decoder to decode the stream as UTF-8 text
-        const decoder = new TextDecoder('utf-8')
-
-        // Loop until the stream is done
-        while (true) {
-            const { value, done } = await reader.read()
-            if (done) {
-                break
-            }
-
-            const rawValue = decoder.decode(value)
-            const lines = rawValue.split('\n')
-
-            for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                    const jsonString = line.slice(6)
-                    if (jsonString == '[DONE]') {
-                        return
-                    }
-                    yield JSON.parse(jsonString)
-                }
-            }
-        }
-    } else {
-        // Raise exception
-        throw new Error('Response is not an event-stream')
-    }
-}
-
-export const API_ROOT = 'http://localhost:8000'
-
-/** Optional legacy Python backend — off by default; IDE uses client-side AI instead */
-export const LEGACY_BACKEND_ENABLED = false
-
-export function isLegacyBackendEnabled(): boolean {
-    return LEGACY_BACKEND_ENABLED
-}
 
 export function join(a: string, b: string): string {
     if (a[a.length - 1] === connector.PLATFORM_DELIMITER) {

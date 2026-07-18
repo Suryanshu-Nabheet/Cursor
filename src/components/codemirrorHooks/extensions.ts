@@ -18,6 +18,7 @@ import {
     scrollPastEnd,
     highlightActiveLine,
     highlightActiveLineGutter,
+    lineNumbers,
 } from '@codemirror/view'
 import { syntaxBundle } from '../../features/extensions/syntax'
 import { indentationMarkers } from '../../features/extensions/indentLines'
@@ -84,7 +85,11 @@ const syntaxCompartment = new Compartment(),
     readOnlyCompartment = new Compartment(),
     themeCompartment = new Compartment(),
     fontCompartment = new Compartment(),
-    lineWrappingCompartment = new Compartment()
+    lineWrappingCompartment = new Compartment(),
+    lineNumbersCompartment = new Compartment(),
+    activeLineCompartment = new Compartment(),
+    indentGuidesCompartment = new Compartment(),
+    scrollbarCompartment = new Compartment()
 
 const OPEN_BRACKETS = ['{', '[', '(']
 const CLOSE_BRACKETS = ['}', ']', ')']
@@ -163,10 +168,13 @@ const globalExtensions = [
     //         }
     //     ])
     // ),
-    highlightActiveLine(),
-    highlightActiveLineGutter(),
+    lineNumbersCompartment.of(lineNumbers()),
+    activeLineCompartment.of([
+        highlightActiveLine(),
+        highlightActiveLineGutter(),
+    ]),
     lineWrappingCompartment.of(EditorView.lineWrapping),
-    indentationMarkers(),
+    indentGuidesCompartment.of(indentationMarkers()),
     newLineText,
     diffExtension,
     hackExtension,
@@ -224,7 +232,7 @@ const globalExtensions = [
             },
         ])
     ),
-    scrollbarPlugin,
+    scrollbarCompartment.of(scrollbarPlugin),
     treeHighlighter,
     syntaxCompartment.of([]),
     lsCompartment.of([]),
@@ -448,27 +456,81 @@ export function useExtensions({
     }, [commandBarOpen, filePath, editorRef.current, justCreated])
 
     useEffect(() => {
-        if (fileIndentUnit != null) {
-            const fileIndent = [
-                indentUnit.of(fileIndentUnit),
-                EditorState.tabSize.of(fileIndentUnit.length),
-            ]
-            editorRef.current.view?.dispatch({
-                effects: indentCompartment.reconfigure(fileIndent),
-            })
+        const view = editorRef.current?.view
+        if (!view) return
+
+        const tabSize = Number(settings.tabSize || 4)
+        const useSpaces = settings.insertSpaces !== false
+        const detect = settings.detectIndentation === true
+
+        let unit: string
+        let size: number
+        if (detect && fileIndentUnit != null) {
+            unit = fileIndentUnit
+            size = fileIndentUnit === '\t' ? tabSize : fileIndentUnit.length
+        } else {
+            unit = useSpaces ? ' '.repeat(tabSize) : '\t'
+            size = tabSize
         }
-    }, [fileIndentUnit, editorRef.current, justCreated])
+
+        view.dispatch({
+            effects: indentCompartment.reconfigure([
+                indentUnit.of(unit),
+                EditorState.tabSize.of(size),
+            ]),
+        })
+    }, [
+        fileIndentUnit,
+        settings.tabSize,
+        settings.insertSpaces,
+        settings.detectIndentation,
+        editorRef.current,
+        justCreated,
+    ])
 
     useEffect(() => {
-        if (settings.tabSize != undefined) {
-            editorRef.current.view?.dispatch({
-                effects: indentCompartment.reconfigure([
-                    indentUnit.of(' '.repeat(Number(settings.tabSize))),
-                    EditorState.tabSize.of(Number(settings.tabSize)),
-                ]),
-            })
-        }
-    }, [settings.tabSize, editorRef.current, justCreated])
+        const view = editorRef.current?.view
+        if (!view) return
+        view.dispatch({
+            effects: lineNumbersCompartment.reconfigure(
+                settings.showLineNumbers === false ? [] : lineNumbers()
+            ),
+        })
+    }, [settings.showLineNumbers, editorRef.current, justCreated])
+
+    useEffect(() => {
+        const view = editorRef.current?.view
+        if (!view) return
+        view.dispatch({
+            effects: activeLineCompartment.reconfigure(
+                settings.highlightActiveLine === false
+                    ? []
+                    : [highlightActiveLine(), highlightActiveLineGutter()]
+            ),
+        })
+    }, [settings.highlightActiveLine, editorRef.current, justCreated])
+
+    useEffect(() => {
+        const view = editorRef.current?.view
+        if (!view) return
+        view.dispatch({
+            effects: indentGuidesCompartment.reconfigure(
+                settings.showIndentGuides === false ? [] : indentationMarkers()
+            ),
+        })
+    }, [settings.showIndentGuides, editorRef.current, justCreated])
+
+    useEffect(() => {
+        const view = editorRef.current?.view
+        if (!view) return
+        view.dispatch({
+            effects: scrollbarCompartment.reconfigure(
+                settings.showScrollbarDiagnostics === false
+                    ? []
+                    : scrollbarPlugin
+            ),
+        })
+    }, [settings.showScrollbarDiagnostics, editorRef.current, justCreated])
 
     // Apply theme from settings - must update when theme changes
     useEffect(() => {

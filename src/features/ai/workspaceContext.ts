@@ -314,6 +314,10 @@ export function injectWorkspaceContext(
         ? filtered
         : [{ role: 'system', content: AI_SYSTEM_PROMPT }, ...filtered]
 
+    if (!workspaceContext.trim()) {
+        return rest
+    }
+
     const promptIdx = rest.findIndex(
         m => m.role === 'system' && m.content === AI_SYSTEM_PROMPT
     )

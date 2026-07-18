@@ -1,7 +1,6 @@
-import { app } from 'electron'
+import { app, systemPreferences } from 'electron'
 import log from 'electron-log'
 
-import { API_ROOT } from '../utils'
 import { setupCommentIndexer } from './commentIndexer'
 import { setupIndex } from './indexer'
 import { setupLSPs } from './lsp'
@@ -10,7 +9,6 @@ import mainWindow from './window'
 import { setupSearch } from './search'
 import setupApplicationsFolder from './setup/appFolder'
 import setupAutoUpdater from './setup/autoUpdater'
-import { setupEnv } from './setup/env'
 import setupIpcs from './setup/ipcs'
 import setupGitIpcs from './setup/git'
 import setupLogger from './setup/logger'
@@ -28,7 +26,20 @@ if (process.platform === 'win32') {
     app.setAppUserModelId('com.suryanshunabheet.cursor')
 }
 
-setupEnv()
+// Windows Squirrel installer shortcut handler
+if (require('electron-squirrel-startup')) {
+    app.quit()
+}
+
+// macOS: disable press-and-hold so key repeat works in the editor
+if (process.platform === 'darwin') {
+    systemPreferences.setUserDefault(
+        'ApplePressAndHoldEnabled',
+        'boolean',
+        false
+    )
+}
+
 setupProtocal()
 setupSingleInstance()
 setupAutoUpdater()
@@ -53,7 +64,7 @@ app.on('ready', () => {
     setupCommentIndexer()
     setupTestIndexer()
     setupStoreHandlers()
-    setupIndex(API_ROOT, mainWindow.win!)
+    setupIndex(mainWindow.win!)
     log.info('setup index')
 })
 app.on('window-all-closed', () => {

@@ -72,26 +72,14 @@ fi
 print_info "Setting up Language Server Protocol (LSP) directory..."
 mkdir -p lsp
 
-if [ ! -f .env ]; then
-    if [ -f .env.example ]; then
-        print_info "Creating .env file from template..."
-        cp .env.example .env
-        print_success ".env file created"
-    else
-        print_info "No .env.example found; skipping .env creation"
-    fi
-else
-    print_info ".env file already exists"
-fi
-
 echo ""
 echo "================================================"
 print_success "Cursor IDE setup completed successfully!"
 echo "================================================"
 echo ""
 echo "Next steps:"
-echo "  1. Review and update .env file if needed"
-echo "  2. Run 'npm start' to launch Cursor IDE"
+echo "  1. Run 'npm start' to launch Cursor IDE"
+echo "  2. Add your AI keys in Settings (BYOK), or use Ollama locally"
 echo ""
 echo "For more information, see README.md"
 echo ""

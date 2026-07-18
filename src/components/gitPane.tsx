@@ -136,6 +136,10 @@ export const GitPane = () => {
 
     const handleDraftCommitMessage = async () => {
         if (!rootPath) return
+        if (settings.aiCommitDraftEnabled === false) {
+            setError('AI commit drafts are disabled in Settings → AI.')
+            return
+        }
         setDraftingMessage(true)
         setError('')
         try {
@@ -305,9 +309,17 @@ export const GitPane = () => {
                         <div className="grid grid-cols-2 gap-2">
                             <button
                                 className="rounded-[6px] border border-[var(--ui-border)] px-2 py-1.5 text-[12px] font-medium text-[var(--ui-fg)] hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-40 disabled:cursor-not-allowed"
-                                title="Draft a commit message from current changes"
+                                title={
+                                    settings.aiCommitDraftEnabled === false
+                                        ? 'Enable AI commit drafts in Settings → AI'
+                                        : 'Draft a commit message from current changes'
+                                }
                                 onClick={handleDraftCommitMessage}
-                                disabled={loading || draftingMessage}
+                                disabled={
+                                    loading ||
+                                    draftingMessage ||
+                                    settings.aiCommitDraftEnabled === false
+                                }
                             >
                                 <FontAwesomeIcon icon={faStar} />{' '}
                                 {draftingMessage ? 'Drafting...' : 'AI Draft'}

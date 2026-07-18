@@ -69,7 +69,7 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
+# Local env files (unused for AI — keys live in Settings / BYOK)
 .env
 .env.test
 

@@ -25,6 +25,7 @@ import { CachedTab, ReduxTransaction, Tab } from '../features/window/state'
 import {
     codeUpdate,
     editorCreated,
+    saveFile,
     scrollUpdate,
 } from '../features/globalSlice'
 import * as csel from '../features/chat/chatSelectors'
@@ -82,6 +83,24 @@ const STATE_FIELDS = {
     vim: vimStateField,
     diagnostics: diagnosticsField,
     // lint: lintState
+}
+
+const autoSaveTimers = new Map<number, ReturnType<typeof setTimeout>>()
+
+function scheduleAutoSave(
+    fileId: number,
+    delayMs: number,
+    dispatch: ReturnType<typeof useAppDispatch>
+) {
+    const existing = autoSaveTimers.get(fileId)
+    if (existing) clearTimeout(existing)
+    autoSaveTimers.set(
+        fileId,
+        setTimeout(() => {
+            autoSaveTimers.delete(fileId)
+            dispatch(saveFile(fileId))
+        }, delayMs)
+    )
 }
 
 interface EditorHookProps {
@@ -269,7 +288,12 @@ export default function Editor({ tabId }: { tabId: number }) {
                     ref={editorRef}
                     customDispatch={customDispatch}
                     autoFocus={isPaneActive && isRenaming == null}
-                    basicSetup={{ autocompletion: false }}
+                    basicSetup={{
+                        autocompletion: false,
+                        lineNumbers: false,
+                        highlightActiveLine: false,
+                        highlightActiveLineGutter: false,
+                    }}
                     className="window__editor"
                     height="100%"
                     onCreateEditor={(view: EditorView, _state: EditorState) => {
@@ -331,6 +355,19 @@ export default function Editor({ tabId }: { tabId: number }) {
                                     canMarkNotSaved,
                                 })
                             )
+                            if (
+                                canMarkNotSaved &&
+                                settings.autoSave === 'afterDelay'
+                            ) {
+                                const delay = Math.min(
+                                    10000,
+                                    Math.max(
+                                        500,
+                                        settings.autoSaveDelay ?? 1000
+                                    )
+                                )
+                                scheduleAutoSave(tab.fileId, delay, dispatch)
+                            }
                         },
                         100
                     )}

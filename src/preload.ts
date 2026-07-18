@@ -231,10 +231,6 @@ const electronConnector = {
 
     copyToClipboard: (path: string) => ipcRenderer.invoke('copy_file', path),
 
-    getUploadPreference: () => ipcRenderer.invoke('getUploadPreference', null),
-    saveUploadPreference: (data: any) =>
-        ipcRenderer.invoke('saveUploadPreference', data),
-
     setStore: (key: string, blob: any) =>
         ipcRenderer.invoke('setStore', { key, blob }),
     getStore: (key: string) => ipcRenderer.invoke('getStore', key),
@@ -449,12 +445,6 @@ const electronConnector = {
     uninstallExtension: (extensionId: string) =>
         ipcRenderer.invoke('uninstallExtension', extensionId),
     getInstalledExtensions: () => ipcRenderer.invoke('getInstalledExtensions'),
-
-    // Environment variables for AI providers
-    getEnvAPIKey: (provider: string) =>
-        ipcRenderer.invoke('getEnvAPIKey', provider),
-    getDefaultAIProvider: () => ipcRenderer.invoke('getDefaultAIProvider'),
-    getEnvKeyStatus: () => ipcRenderer.invoke('getEnvKeyStatus'),
 }
 
 contextBridge.exposeInMainWorld('connector', electronConnector)

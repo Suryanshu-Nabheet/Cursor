@@ -45,22 +45,6 @@ export default function setupIpcs() {
         }
     })
 
-    ipcMain.handle(
-        'getEnvAPIKey',
-        (_event: IpcMainInvokeEvent, _provider: string) => {
-            return null
-        }
-    )
-
-    ipcMain.handle('getDefaultAIProvider', () => {
-        return null
-    })
-
-    // Get status of environment keys (Legacy/Removed)
-    ipcMain.handle('getEnvKeyStatus', () => {
-        return {}
-    })
-
     ipcMain.handle('get_platform', function (_event: any) {
         return process.platform
     })
@@ -154,18 +138,6 @@ export default function setupIpcs() {
     ipcMain.handle('getClipboard', function (_event: any) {
         const clip = clipboard.readText()
         return clip
-    })
-
-    ipcMain.handle('saveUploadPreference', function (_event: any, arg: string) {
-        store.set('uploadPreferences', arg)
-    })
-
-    ipcMain.handle('getUploadPreference', function (_event: any) {
-        if (store.has('uploadPreferences')) {
-            return store.get('uploadPreferences')
-        } else {
-            return false
-        }
     })
 
     ipcMain.handle(

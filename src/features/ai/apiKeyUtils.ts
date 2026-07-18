@@ -1,6 +1,5 @@
 /**
- * Utility functions for getting API keys
- * Policy: Strictly User Settings. No .env fallback.
+ * BYOK API key helpers — keys come only from user Settings.
  */
 
 import { Settings } from '../window/state'
@@ -11,12 +10,16 @@ import { GEMINI_MODELS } from './providers/gemini'
 import { CLAUDE_MODELS } from './providers/claude'
 import { OLLAMA_MODELS } from './providers/ollama'
 
-/**
- * Get API key for a provider.
- * Strictly uses User Settings.
- */
-export async function getAPIKeyWithEnvFallback(
-    provider: 'openai' | 'openrouter' | 'gemini' | 'claude' | 'ollama',
+export type AIProviderId =
+    | 'openai'
+    | 'openrouter'
+    | 'gemini'
+    | 'claude'
+    | 'ollama'
+
+/** Resolve a provider API key from Settings (BYOK). */
+export async function getAPIKeyFromSettings(
+    provider: AIProviderId,
     settings: Settings
 ): Promise<string | null> {
     switch (provider) {
@@ -41,21 +44,18 @@ export async function getAPIKeyWithEnvFallback(
             }
             break
         case 'ollama':
-            return 'ollama' // Dummy key
+            return 'ollama'
     }
 
     return null
 }
 
-/**
- * Get the active provider's API key
- */
+/** Active provider + key + model from Settings (BYOK). Defaults to Ollama. */
 export async function getActiveProviderAPIKey(
     settings: Settings
 ): Promise<{ provider: string; apiKey: string | null; model: string } | null> {
-    const provider = settings.aiProvider || 'ollama' // Default to Ollama
-
-    const apiKey = await getAPIKeyWithEnvFallback(provider as any, settings)
+    const provider = (settings.aiProvider || 'ollama') as AIProviderId
+    const apiKey = await getAPIKeyFromSettings(provider, settings)
 
     if (!apiKey) {
         return null

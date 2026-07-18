@@ -1,34 +1,20 @@
-import { API_ROOT } from '../../utils'
 import { CodeSymbolType } from '../window/state'
 
+/** Local symbol helper — no remote index backend. */
 export class ContextBuilder {
-    // TODO - refactor this to actually use the LSP
     private previousSymbols: [string, CodeSymbolType, string, string][] | null =
         []
     private previousSymbolsFuture: Promise<{ query: string }> | null = null
 
-    //constructor(private client: LanguageServerClient) {}
-    constructor(private repoId: string) {
+    constructor(private _repoId: string) {
         setInterval(() => {
             this.previousSymbols = null
             this.previousSymbolsFuture = null
         }, 30000)
     }
 
-    async getSymbols() {
-        if (this.repoId == null) {
-            return []
-        }
-        const resp = await fetch(
-            API_ROOT + '/repos/private/all_symbols/' + this.repoId,
-            {
-                method: 'GET',
-            }
-        )
-
-        const result = await resp.json()
-
-        return result
+    async getSymbols(): Promise<[string, CodeSymbolType, string, string][]> {
+        return []
     }
 
     async quickGetSymbols(timeout = 5) {
@@ -39,20 +25,17 @@ export class ContextBuilder {
         if (this.previousSymbolsFuture) {
             await Promise.race([
                 this.previousSymbolsFuture,
-                new Promise((resolve, reject) =>
-                    setTimeout(() => resolve(null), timeout)
-                ),
+                new Promise((resolve) => setTimeout(() => resolve(null), timeout)),
             ])
         }
 
         if (this.previousSymbols) {
             return this.previousSymbols
-        } else {
-            return []
         }
+        return []
     }
 
-    async getCompletion(currentText: string, relevantDocs: string[]) {
+    async getCompletion(currentText: string, _relevantDocs: string[]) {
         if (this.previousSymbolsFuture == null) {
             this.previousSymbolsFuture = this.getSymbols().then((result) => {
                 this.previousSymbols = result
@@ -61,7 +44,6 @@ export class ContextBuilder {
         }
 
         const symbols = await this.quickGetSymbols(1000)
-        const start = performance.now()
         const finalSymbols = [
             ...symbols
                 .filter((symbol) =>
@@ -71,7 +53,6 @@ export class ContextBuilder {
                     const startIndex = name
                         .toLowerCase()
                         .indexOf(currentText.toLowerCase())
-
                     const endIndex = startIndex + currentText.length
                     return {
                         type: block_type,
@@ -114,7 +95,6 @@ export class ContextBuilder {
                 }),
         ]
 
-        // Return the finalSymbols array
         return finalSymbols.slice(0, 20)
     }
 }

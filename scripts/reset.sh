@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Deep clean for a fresh setup: build outputs, logs, caches, LSP downloads, node_modules.
-# Does NOT delete .env, git history, or source.
+# Does NOT delete git history or source.
 # Usage: ./scripts/reset.sh
 #        ./scripts/reset.sh --with-userdata   # also wipe Cursor Electron userData (settings, extensions)
 

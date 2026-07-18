@@ -17,7 +17,12 @@ export const getSettings = createSelector(
 
 export const getActiveSettingsTab = createSelector(
     (state: FullState) => state.settingsState,
-    (settings: SettingsState) => settings.activeTab
+    (settings: SettingsState) => {
+        const tab = settings.activeTab as string
+        // Migrate removed Account tab → About
+        if (tab === 'Account') return 'About'
+        return settings.activeTab
+    }
 )
 
 export async function getModels(secretKey: string) {

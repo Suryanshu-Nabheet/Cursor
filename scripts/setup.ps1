@@ -82,26 +82,14 @@ if (-not (Test-Path "lsp")) {
     New-Item -ItemType Directory -Path "lsp" -Force | Out-Null
 }
 
-if (-not (Test-Path ".env")) {
-    if (Test-Path ".env.example") {
-        Print-Info "Creating .env file from template..."
-        Copy-Item ".env.example" ".env"
-        Print-Success ".env file created"
-    } else {
-        Print-Info "No .env.example found; skipping .env creation"
-    }
-} else {
-    Print-Info ".env file already exists"
-}
-
 Write-Host ""
 Write-Host "================================================" -ForegroundColor Cyan
 Print-Success "Cursor IDE setup completed successfully!"
 Write-Host "================================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next steps:"
-Write-Host "  1. Review and update .env file if needed"
-Write-Host "  2. Run 'npm start' to launch Cursor IDE"
+Write-Host "  1. Run 'npm start' to launch Cursor IDE"
+Write-Host "  2. Add your AI keys in Settings (BYOK), or use Ollama locally"
 Write-Host ""
 Write-Host "For more information, see README.md"
 Write-Host ""
