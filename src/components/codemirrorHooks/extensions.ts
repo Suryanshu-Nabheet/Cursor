@@ -41,7 +41,7 @@ import { languageServerStatus } from '../../features/lsp/languageServerSelector'
 import { getLanguageFromFilename } from '../../features/extensions/utils'
 import { scrollbarPlugin } from '../../features/extensions/minimap'
 
-import { indentSelection } from '@codemirror/commands'
+import { indentSelection, indentMore, indentLess } from '@codemirror/commands'
 import { emacs } from '@replit/codemirror-emacs'
 
 import { newLineText } from '../../features/extensions/newLineText'
@@ -56,7 +56,7 @@ import { store } from '../../app/store'
 import { triggerFileSearch } from '../../features/tools/toolSlice'
 import { pressAICommand } from '../../features/chat/chatThunks'
 import { createThemeFromData } from '../../theme/themeManager'
-import { ghostTextExtension, hasGhostText, bindViewFilePath } from '../../features/extensions/ghostText'
+import { ghostTextExtension, acceptGhostText, bindViewFilePath } from '../../features/extensions/ghostText'
 
 // Safe accessor for connector (fallback to window.connector if global connector is not available)
 const getConnector = () => {
@@ -207,14 +207,20 @@ const globalExtensions = [
             },
         ])
     ),
-    Prec.high(
+    Prec.highest(
         keymap.of([
             {
                 key: 'Tab',
                 run: (view) => {
-                    if (hasGhostText(view.state)) return false
-                    return acceptCompletion(view)
+                    // 1) AI ghost text  2) autocomplete  3) indent
+                    if (acceptGhostText(view)) return true
+                    if (acceptCompletion(view)) return true
+                    return indentMore(view)
                 },
+            },
+            {
+                key: 'Shift-Tab',
+                run: indentLess,
             },
         ])
     ),

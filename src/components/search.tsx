@@ -68,6 +68,7 @@ export function FeedbackArea() {
 
 export const LeftSide = () => {
     const activeTab = useAppSelector(getLeftTab)
+
     const renderTabContent = () => {
         switch (activeTab) {
             case 'search':

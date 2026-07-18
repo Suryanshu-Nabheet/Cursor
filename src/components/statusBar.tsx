@@ -1,267 +1,327 @@
 import React, { useEffect, useState } from 'react'
 import { Codicon } from './codicon'
-import { useAppSelector } from '../app/hooks'
-import { getRootPath, getCurrentFileId } from '../features/selectors'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import {
+    getRootPath,
+    getCurrentFileId,
+} from '../features/selectors'
 import { getSettings } from '../features/settings/settingsSelectors'
 import {
     getInlineCompletionLastError,
     getInlineCompletionStatus,
 } from '../features/ai/inlineCompletion'
+import { getLanguageFromFilename } from '../features/extensions/utils'
+import { getActiveTabId } from '../features/window/paneUtils'
+import { getCodeMirrorView } from '../features/codemirror/codemirrorSlice'
+import { getDiagnostics, lintState } from '../features/linter/lint'
+import {
+    openGit,
+    expandLeftSide,
+} from '../features/tools/toolSlice'
+import { setSettingsTab } from '../features/settings/settingsSlice'
+import type { FullState } from '../features/window/state'
+
+function toLspServerName(languageId: string): string | null {
+    const map: Record<string, string> = {
+        typescript: 'typescript',
+        typescriptreact: 'typescript',
+        javascript: 'typescript',
+        javascriptreact: 'typescript',
+        python: 'python',
+        html: 'html',
+        css: 'css',
+        scss: 'css',
+        c: 'c',
+        cpp: 'c',
+        rust: 'rust',
+        go: 'go',
+        csharp: 'csharp',
+        java: 'java',
+        php: 'php',
+    }
+    return map[languageId] || null
+}
+
+function detectLanguageLabel(fileName: string): string {
+    const ext = fileName.split('.').pop()?.toLowerCase()
+    const languageMap: Record<string, string> = {
+        ts: 'TypeScript',
+        tsx: 'TypeScript React',
+        js: 'JavaScript',
+        jsx: 'JavaScript React',
+        py: 'Python',
+        java: 'Java',
+        cpp: 'C++',
+        c: 'C',
+        h: 'C/C++ Header',
+        rs: 'Rust',
+        go: 'Go',
+        rb: 'Ruby',
+        php: 'PHP',
+        html: 'HTML',
+        css: 'CSS',
+        scss: 'SCSS',
+        json: 'JSON',
+        md: 'Markdown',
+        yaml: 'YAML',
+        yml: 'YAML',
+        xml: 'XML',
+        sh: 'Shell',
+        bash: 'Shell',
+        zsh: 'Shell',
+        sql: 'SQL',
+        toml: 'TOML',
+        vue: 'Vue',
+        svelte: 'Svelte',
+    }
+    return languageMap[ext || ''] || (ext ? ext.toUpperCase() : 'Plain Text')
+}
+
+function detectLineEnding(contents: string): 'LF' | 'CRLF' | 'CR' {
+    if (contents.includes('\r\n')) return 'CRLF'
+    if (contents.includes('\r')) return 'CR'
+    return 'LF'
+}
+
+function countActiveDiagnostics(state: FullState): {
+    errors: number
+    warnings: number
+} {
+    const tabId = getActiveTabId(state.global)
+    if (tabId == null) return { errors: 0, warnings: 0 }
+    const viewId = state.codeMirrorState.editorMap[tabId]
+    if (viewId == null) return { errors: 0, warnings: 0 }
+    const view = getCodeMirrorView(viewId)
+    if (!view) return { errors: 0, warnings: 0 }
+    const field = view.state.field(lintState, false)
+    if (!field) return { errors: 0, warnings: 0 }
+    const diags = getDiagnostics(field, view.state)
+    let errors = 0
+    let warnings = 0
+    for (const d of diags) {
+        if (d.severity === 'error') errors++
+        else if (d.severity === 'warning') warnings++
+    }
+    return { errors, warnings }
+}
 
 export const StatusBar = () => {
+    const dispatch = useAppDispatch()
     const rootPath = useAppSelector(getRootPath)
     const activeFileId = useAppSelector(getCurrentFileId)
-    const state = useAppSelector((state) => state.global)
+    const settings = useAppSelector(getSettings)
+    const fileName = useAppSelector((state) => {
+        if (activeFileId == null) return ''
+        return state.global.files[activeFileId]?.name || ''
+    })
+    const fileContents = useAppSelector((state) => {
+        if (activeFileId == null) return ''
+        return state.global.fileCache[activeFileId]?.contents || ''
+    })
+    const fullState = useAppSelector((s) => s as FullState)
+
+    const languageId = fileName ? getLanguageFromFilename(fileName) : ''
+    const lspServerName = languageId ? toLspServerName(languageId) : null
+    const lspStatus = useAppSelector((state) =>
+        lspServerName
+            ? state.languageServerState.languageServers[lspServerName] || null
+            : null
+    )
 
     const [gitBranch, setGitBranch] = useState<string | null>(null)
-    const [gitChanges, setGitChanges] = useState(0)
+    const [gitDirty, setGitDirty] = useState(false)
     const [isRepo, setIsRepo] = useState(false)
-    const [diagnosticsCount, setDiagnosticsCount] = useState({
-        errors: 0,
-        warnings: 0,
-    })
-    const [fileInfo, setFileInfo] = useState({
-        language: 'Plain Text',
-        encoding: 'UTF-8',
-        lineEnding: 'LF',
-        indentation: 'Spaces: 4',
-    })
+    const [problems, setProblems] = useState({ errors: 0, warnings: 0 })
     const [completionError, setCompletionError] = useState<string | null>(null)
-    const settings = useAppSelector(getSettings)
 
-    // Fetch Git information
-    const fetchGitInfo = async () => {
-        if (!rootPath) {
-            setIsRepo(false)
-            return
-        }
-
-        try {
-            // @ts-ignore
-            const repoCheck = await connector.gitIsRepo(rootPath)
-            if (!repoCheck.isRepo) {
-                setIsRepo(false)
+    useEffect(() => {
+        let cancelled = false
+        const fetchGitInfo = async () => {
+            if (!rootPath) {
+                if (!cancelled) setIsRepo(false)
                 return
             }
-
-            setIsRepo(true)
-
-            // @ts-ignore
-            const branchResult = await connector.gitCurrentBranch(rootPath)
-            if (branchResult.success) {
-                setGitBranch(branchResult.branch)
+            try {
+                // @ts-ignore
+                const repoCheck = await connector.gitIsRepo(rootPath)
+                if (!repoCheck?.isRepo) {
+                    if (!cancelled) setIsRepo(false)
+                    return
+                }
+                if (!cancelled) setIsRepo(true)
+                // @ts-ignore
+                const branchResult = await connector.gitCurrentBranch(rootPath)
+                if (!cancelled && branchResult?.success) {
+                    setGitBranch(branchResult.branch)
+                }
+                // @ts-ignore
+                const status = await connector.gitStatus(rootPath)
+                if (!cancelled && Array.isArray(status)) {
+                    setGitDirty(status.length > 0)
+                }
+            } catch {
+                if (!cancelled) setIsRepo(false)
             }
-
-            // @ts-ignore
-            const status = await connector.gitStatus(rootPath)
-            if (Array.isArray(status)) {
-                setGitChanges(status.length)
-            }
-        } catch (e) {
-            setIsRepo(false)
         }
-    }
-
-    // Get diagnostics from language server
-    const fetchDiagnostics = () => {
-        if (!activeFileId || !state.files || !state.files[activeFileId]) return
-
-        const filePath = getFilePathFromId(activeFileId)
-
-        // Count errors and warnings from diagnostics
-        let errors = 0
-        let warnings = 0
-
-        // Check if we have diagnostics for this file
-        const diagnostics = state.fileDiagnostics?.[filePath] || []
-        diagnostics.forEach((diag: any) => {
-            if (diag.severity === 1) errors++ // Error
-            else if (diag.severity === 2) warnings++ // Warning
-        })
-
-        setDiagnosticsCount({ errors, warnings })
-    }
-
-    // Get file path from ID
-    const getFilePathFromId = (fileId: number): string => {
-        if (!state.files || !state.files[fileId]) return ''
-
-        const file = state.files[fileId]
-        if (!file) return ''
-
-        const parts: string[] = [file.name]
-        let currentFolderId = file.parentFolderId
-
-        while (currentFolderId != null && state.folders) {
-            const folder = state.folders[currentFolderId]
-            if (!folder) break
-            parts.unshift(folder.name)
-            currentFolderId = folder.parentFolderId
+        void fetchGitInfo()
+        const interval = setInterval(fetchGitInfo, 4000)
+        return () => {
+            cancelled = true
+            clearInterval(interval)
         }
-
-        return parts.join('/')
-    }
-
-    // Detect file language
-    const detectLanguage = (fileName: string): string => {
-        const ext = fileName.split('.').pop()?.toLowerCase()
-        const languageMap: { [key: string]: string } = {
-            ts: 'TypeScript',
-            tsx: 'TypeScript JSX',
-            js: 'JavaScript',
-            jsx: 'JavaScript JSX',
-            py: 'Python',
-            java: 'Java',
-            cpp: 'C++',
-            c: 'C',
-            rs: 'Rust',
-            go: 'Go',
-            rb: 'Ruby',
-            php: 'PHP',
-            html: 'HTML',
-            css: 'CSS',
-            scss: 'SCSS',
-            json: 'JSON',
-            md: 'Markdown',
-            yaml: 'YAML',
-            yml: 'YAML',
-            xml: 'XML',
-            sh: 'Shell',
-            sql: 'SQL',
-        }
-        return languageMap[ext || ''] || 'Plain Text'
-    }
-
-    // Update file info when active file changes
-    useEffect(() => {
-        if (activeFileId && state.files[activeFileId]) {
-            const file = state.files[activeFileId]
-            const language = detectLanguage(file.name)
-            setFileInfo({
-                language,
-                encoding: 'UTF-8',
-                lineEnding: 'LF',
-                indentation:
-                    settings.insertSpaces === false
-                        ? `Tabs: ${settings.tabSize || 4}`
-                        : `Spaces: ${settings.tabSize || 4}`,
-            })
-        }
-    }, [
-        activeFileId,
-        settings.tabSize,
-        settings.insertSpaces,
-        state.files,
-    ])
-
-    // Poll Git info
-    useEffect(() => {
-        fetchGitInfo()
-        const interval = setInterval(fetchGitInfo, 3000)
-        return () => clearInterval(interval)
     }, [rootPath])
 
-    // Update diagnostics
     useEffect(() => {
-        fetchDiagnostics()
-    }, [activeFileId, state.fileDiagnostics])
+        const tick = () => setProblems(countActiveDiagnostics(fullState))
+        tick()
+        const interval = setInterval(tick, 1000)
+        return () => clearInterval(interval)
+    }, [fullState, activeFileId])
 
     useEffect(() => {
-        const updateCompletionError = () =>
-            setCompletionError(getInlineCompletionLastError())
-        updateCompletionError()
-        const interval = setInterval(updateCompletionError, 2000)
+        const update = () => setCompletionError(getInlineCompletionLastError())
+        update()
+        const interval = setInterval(update, 2000)
         return () => clearInterval(interval)
     }, [])
 
-    const totalProblems = diagnosticsCount.errors + diagnosticsCount.warnings
-    const inlineCompletionStatus = getInlineCompletionStatus(settings)
+    const hasFile = activeFileId != null && !!fileName
+    const language = hasFile ? detectLanguageLabel(String(fileName)) : null
+    const lineEnding = hasFile
+        ? detectLineEnding(String(fileContents || ''))
+        : null
+    const indentation = hasFile
+        ? settings.insertSpaces === false
+            ? `Tabs: ${settings.tabSize || 4}`
+            : `Spaces: ${settings.tabSize || 4}`
+        : null
+    const totalProblems = problems.errors + problems.warnings
+    const inlineStatus = getInlineCompletionStatus(settings)
+
+    const lspLabel = (() => {
+        if (!lspServerName) return null
+        if (lspStatus?.running) return `LSP · ${lspServerName}`
+        if (lspStatus?.installed) return `LSP · ${lspServerName} (stopped)`
+        return null
+    })()
+
+    const openSettings = (tab: 'General' | 'AI' | 'Languages') => {
+        dispatch(setSettingsTab(tab))
+        // setSettingsTab already opens settings
+    }
 
     return (
         <div className="status-bar">
             <div className="status-bar__left">
-                <div
-                    className="status-bar__item status-bar__item--main"
-                    title="Language Server Status"
-                >
-                    <Codicon name="broadcast" style={{ marginRight: '6px', fontSize: '12px' }} />
-                    <span>Connected</span>
-                </div>
                 {isRepo && gitBranch && (
-                    <div className="status-bar__item" title="Git Branch">
-                        <Codicon name="git-branch" style={{ marginRight: '6px', fontSize: '12px' }} />
+                    <button
+                        type="button"
+                        className="status-bar__item status-bar__item--action"
+                        title="Open Source Control"
+                        onClick={() => {
+                            dispatch(openGit())
+                            dispatch(expandLeftSide())
+                        }}
+                    >
+                        <Codicon
+                            name="git-branch"
+                            style={{ marginRight: 6, fontSize: 12 }}
+                        />
                         <span>
                             {gitBranch}
-                            {gitChanges > 0 && `*`}
+                            {gitDirty ? '*' : ''}
                         </span>
-                    </div>
+                    </button>
                 )}
+
                 <div
                     className="status-bar__item"
-                    title={`${diagnosticsCount.errors} errors, ${diagnosticsCount.warnings} warnings`}
+                    title={`${problems.errors} errors, ${problems.warnings} warnings in active editor`}
                 >
                     <Codicon
                         name={
-                            diagnosticsCount.errors > 0
+                            problems.errors > 0
                                 ? 'error'
-                                : diagnosticsCount.warnings > 0
-                                ? 'warning'
-                                : 'check'
+                                : problems.warnings > 0
+                                  ? 'warning'
+                                  : 'check'
                         }
                         style={{
-                            marginRight: '6px',
-                            fontSize: '12px',
+                            marginRight: 6,
+                            fontSize: 12,
                             color:
-                                diagnosticsCount.errors > 0
+                                problems.errors > 0
                                     ? 'var(--color-error)'
-                                    : diagnosticsCount.warnings > 0
-                                    ? 'var(--color-warning)'
-                                    : 'var(--color-success)',
+                                    : problems.warnings > 0
+                                      ? 'var(--color-warning)'
+                                      : 'var(--color-success)',
                         }}
                     />
                     <span>{totalProblems}</span>
                 </div>
-            </div>
 
-            <div className="status-bar__center">
-                <span style={{ fontSize: '10px', opacity: 0.5 }}>
-                    Copyright (c) 2026 Suryanshu Nabheet · MIT · Cursor 1.0.0
-                </span>
+                {lspLabel && (
+                    <button
+                        type="button"
+                        className="status-bar__item status-bar__item--action"
+                        title="Language Servers"
+                        onClick={() => openSettings('Languages')}
+                    >
+                        <Codicon
+                            name="server-process"
+                            style={{ marginRight: 6, fontSize: 12 }}
+                        />
+                        <span>{lspLabel}</span>
+                    </button>
+                )}
             </div>
 
             <div className="status-bar__right">
-                <div className="status-bar__item" title="Indentation">
-                    <span>{fileInfo.indentation}</span>
-                </div>
-                <div className="status-bar__item" title="Encoding">
-                    <span>{fileInfo.encoding}</span>
-                </div>
-                <div className="status-bar__item" title="Line Ending">
-                    <span>{fileInfo.lineEnding}</span>
-                </div>
-                <div className="status-bar__item" title="Language Mode">
-                    <span>{fileInfo.language}</span>
-                </div>
-                <div
-                    className="status-bar__item"
+                {indentation && (
+                    <button
+                        type="button"
+                        className="status-bar__item status-bar__item--action"
+                        title="Editor indentation (Settings → General)"
+                        onClick={() => openSettings('General')}
+                    >
+                        <span>{indentation}</span>
+                    </button>
+                )}
+                {lineEnding && (
+                    <div
+                        className="status-bar__item"
+                        title="Line ending (from file contents)"
+                    >
+                        <span>{lineEnding}</span>
+                    </div>
+                )}
+                {language && (
+                    <div className="status-bar__item" title="Language mode">
+                        <span>{language}</span>
+                    </div>
+                )}
+                <button
+                    type="button"
+                    className="status-bar__item status-bar__item--action"
                     title={
                         completionError
                             ? `Completion error: ${completionError}`
-                            : `Completion: ${inlineCompletionStatus.reason}`
+                            : `Completion: ${inlineStatus.reason}`
                     }
+                    onClick={() => openSettings('AI')}
                 >
-                    <Codicon name="lightbulb" style={{ marginRight: '6px', fontSize: '12px' }} />
+                    <Codicon
+                        name="lightbulb"
+                        style={{ marginRight: 6, fontSize: 12 }}
+                    />
                     <span>
-                        {inlineCompletionStatus.enabled
+                        {inlineStatus.enabled
                             ? completionError
                                 ? 'AI error'
-                                : `AI ${inlineCompletionStatus.provider}`
-                            : 'AI unavailable'}
+                                : `AI · ${inlineStatus.provider}`
+                            : 'AI off'}
                     </span>
-                </div>
-                <div className="status-bar__item" title="Notifications">
-                    <Codicon name="bell" style={{ fontSize: '12px' }} />
-                </div>
+                </button>
             </div>
         </div>
     )

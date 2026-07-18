@@ -135,154 +135,191 @@ body {
 
 /* Activity Bar — horizontal VS Code-style top bar */
 .activity-bar {
+    display: none;
+}
+
+/* Cursor-style activity strip + overlay view list (list does not shift panels) */
+.sidebar2 {
     position: relative;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    height: var(--activity-bar-height);
-    min-height: var(--activity-bar-height);
-    padding: 0 var(--activity-bar-padding-x);
+    height: var(--activity-bar-height, 35px);
+    min-height: var(--activity-bar-height, 35px);
+    max-height: var(--activity-bar-height, 35px);
+    flex: 0 0 var(--activity-bar-height, 35px);
+    flex-shrink: 0;
+    background-color: var(--activity-bar-bg, var(--sidebar-bg, var(--ui-bg)));
+    border-bottom: 1px solid var(--sidebar-border, var(--ui-border));
+    z-index: 40;
+    user-select: none;
+    -webkit-app-region: no-drag;
     box-sizing: border-box;
-    background-color: var(--activity-bar-bg);
-    border-bottom: 1px solid var(--activity-bar-border);
+}
+
+.sidebar2__icon-bar {
+    width: 100%;
+    height: 100%;
+    background-color: inherit;
+}
+
+.sidebar2__icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: var(--activity-bar-gap, 4px);
+    width: 100%;
+    height: 100%;
+    padding: 0 var(--activity-bar-padding-x, 10px);
+    box-sizing: border-box;
+}
+
+.sidebar2__icon {
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    min-height: 26px;
+    margin: 2px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--activity-bar-fg-muted, var(--ui-fg-muted));
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.sidebar2__icon .codicon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex: 0 0 var(--activity-bar-height);
-    flex-shrink: 0;
-    z-index: 30;
-    user-select: none;
-    overflow: visible;
-    isolation: isolate;
+    line-height: 1;
 }
 
-.activity-bar__nav {
+.sidebar2__icon--active {
+    color: var(--activity-bar-fg, var(--ui-fg));
+    background-color: var(--activity-bar-active-bg, var(--ui-hover));
+}
+
+.sidebar2__icon--toggle {
+    margin-left: 2px;
+}
+
+.sidebar2__icon:focus-visible {
+    outline: 1px solid var(--focus-border, var(--accent));
+    outline-offset: 1px;
+}
+
+/* Overlay — does not push Explorer / Search / Git panels */
+.sidebar2__list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 4px 0 6px;
+    background-color: var(--sidebar-bg, var(--ui-bg));
+    border-bottom: 1px solid var(--sidebar-border, var(--ui-border));
+    box-shadow: 0 8px 16px -6px color-mix(in srgb, var(--ui-fg) 18%, transparent);
+    z-index: 50;
+}
+
+.sidebar2__row {
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
-    gap: var(--activity-bar-gap);
-    height: 100%;
-    min-width: 0;
-}
-
-.activity-bar__item {
-    width: var(--activity-bar-item-size);
-    height: var(--activity-bar-item-size);
-    min-width: var(--activity-bar-item-size);
-    min-height: var(--activity-bar-item-size);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    cursor: pointer;
-    color: var(--activity-bar-fg-muted);
-    transition:
-        color var(--transition-fast),
-        background-color var(--transition-fast);
-    position: relative;
-    border: none;
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    border-radius: var(--radius-lg);
-    -webkit-app-region: no-drag;
-}
-
-.activity-bar__item:hover {
-    color: var(--activity-bar-fg);
-    background-color: var(--activity-bar-hover-bg);
-}
-
-.activity-bar__item.active {
-    color: var(--activity-bar-fg);
-    background-color: var(--activity-bar-active-bg);
-}
-
-.activity-bar__item:focus-visible {
-    outline: 1px solid var(--focus-border, var(--accent));
-    outline-offset: 2px;
-}
-
-.activity-bar__item--more {
-    margin-left: var(--activity-bar-more-gap);
-}
-
-.activity-bar__item--more::before {
-    content: '';
-    position: absolute;
-    left: calc(var(--activity-bar-more-gap) * -0.5 - 0.5px);
-    top: 50%;
-    transform: translateY(-50%);
-    width: 1px;
-    height: 14px;
-    background-color: var(--ui-border-subtle);
-    opacity: 0.65;
-    pointer-events: none;
-}
-
-.activity-bar__icon {
-    font-size: var(--activity-bar-icon-size);
-    width: var(--activity-bar-icon-size);
-    height: var(--activity-bar-icon-size);
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    pointer-events: none;
-}
-
-.activity-bar__icon--chevron {
-    font-size: 14px;
-    width: 14px;
-    height: 14px;
-    opacity: 0.85;
-}
-
-.activity-bar__menu {
-    position: absolute;
-    top: calc(var(--activity-bar-height) + 4px);
-    left: 50%;
-    transform: translateX(-50%);
-    min-width: 220px;
-    background-color: var(--ui-bg-elevated);
-    border: 1px solid var(--ui-border);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 8px 24px var(--shadow-overlay-md);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    z-index: 9999;
-}
-
-.activity-bar__menu-item {
-    display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    width: 100%;
-    padding: 10px 14px;
+    gap: 8px;
+    padding: 4px 16px;
+    min-height: 28px;
+    cursor: pointer;
+    color: var(--ui-fg);
+    outline: none;
+}
+
+.sidebar2__row--active {
+    background-color: var(--sidebar-selected, var(--ui-hover));
+}
+
+.sidebar2__row--disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.sidebar2__row-main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.sidebar2__row-icon {
+    padding-right: 4px;
+    font-size: 14px !important;
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0;
+    color: inherit;
+}
+
+.sidebar2__row-label {
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sidebar2__row-shortcut {
+    margin-left: 6px;
+    font-size: 11px;
+    opacity: 0.5;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.sidebar2__pin {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
     border: none;
+    border-radius: 5px;
     background: transparent;
     color: var(--ui-fg);
-    font-size: var(--font-size-sm);
-    text-align: left;
     cursor: pointer;
-    transition: background-color var(--transition-fast);
+    flex-shrink: 0;
+    opacity: 1;
 }
 
-.activity-bar__menu-item:hover:not(:disabled) {
-    background-color: var(--ui-hover);
+.sidebar2__pin .codicon {
+    font-size: 12px;
 }
 
-.activity-bar__menu-item:disabled {
+.sidebar2__pin--off {
+    opacity: 0;
+}
+
+.sidebar2__row:hover .sidebar2__pin--off,
+.sidebar2__row:focus-within .sidebar2__pin--off {
     opacity: 0.55;
-    cursor: not-allowed;
 }
 
-.activity-bar__menu-badge {
+.sidebar2__soon {
     font-size: 10px;
-    color: var(--ui-fg-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    font-weight: 500;
+    opacity: 0.55;
+    letter-spacing: 0.02em;
 }
 
 /* Explorer empty state — matches VS Code welcome sidebar */

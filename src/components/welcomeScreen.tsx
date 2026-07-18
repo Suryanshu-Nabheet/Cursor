@@ -48,7 +48,10 @@ export function WelcomeScreen() {
                     <p className="welcome-motto text-[var(--ui-fg-muted)] text-lg font-light">
                         Press{' '}
                         <kbd className="font-sans bg-[var(--ui-bg-elevated)] px-2 py-0.5 rounded border border-[var(--border)] text-sm text-[var(--foreground)]">
-                            ⌘ K
+                            {typeof connector !== 'undefined' &&
+                            connector.PLATFORM_META_KEY === 'Ctrl'
+                                ? 'Ctrl+K'
+                                : '⌘K'}
                         </kbd>{' '}
                         to unlock the power of Cursor AI
                     </p>

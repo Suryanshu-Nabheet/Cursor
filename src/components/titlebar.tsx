@@ -251,8 +251,8 @@ export function TitleBar({
     const appVersion = useAppSelector(gsel.getVersion)
     const leftSideExpanded = useAppSelector((state: any) => state.toolState?.leftSideExpanded)
     const aiSidebarOpen = useAppSelector((state: any) => state.toolState?.aiCommandPaletteTriggered)
-    const settingsOpen = useAppSelector((state: any) => state.settings?.settingsVisible)
-    const terminalOpen = useAppSelector((state: any) => state.global?.terminalVisible)
+    const settingsOpen = useAppSelector((state: any) => state.settingsState?.isOpen)
+    const terminalOpen = useAppSelector((state: any) => state.global?.terminalOpen)
 
     const [isWindows, setIsWindows] = useState(false)
 

@@ -8,7 +8,6 @@ import {
     faMinus,
     faCloudArrowUp,
     faCloudArrowDown,
-    faEllipsis,
     faChevronDown,
     faChevronRight,
     faXmark,
@@ -269,15 +268,9 @@ export const GitPane = () => {
                 <span>Source Control</span>
                 <div className="flex gap-3 text-[14px]">
                     <button
-                        title="View as Tree/List"
-                        className="hover:text-[var(--foreground)]"
-                    >
-                        <FontAwesomeIcon icon={faEllipsis} />
-                    </button>
-                    <button
                         title="Refresh"
                         onClick={fetchGitInfo}
-                        className={`hover:text-[var(--foreground)] ${
+                        className={`${
                             loading ? 'animate-spin' : ''
                         }`}
                     >

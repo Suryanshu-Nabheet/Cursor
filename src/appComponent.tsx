@@ -118,18 +118,46 @@ export function App() {
                 }
 
                 // Cmd+B - Toggle Sidebar
-                if (e.key === 'b') {
+                if (e.key === 'b' && !e.shiftKey) {
                     e.preventDefault()
                     e.stopPropagation()
                     dispatch(ts.toggleLeftSide())
                     return
                 }
 
-                // Cmd+Shift+E - Single LSP
+                // Cmd+Shift+E — Explorer
                 if (e.key === 'e' && e.shiftKey) {
                     e.preventDefault()
                     e.stopPropagation()
-                    dispatch(ct.pressAICommand('singleLSP'))
+                    dispatch(ts.openFileTree())
+                    dispatch(ts.expandLeftSide())
+                    return
+                }
+
+                // Cmd+Shift+F — Search panel
+                if (e.key === 'f' && e.shiftKey) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dispatch(ts.openSearch())
+                    dispatch(ts.expandLeftSide())
+                    return
+                }
+
+                // Cmd+Shift+X — Extensions
+                if (e.key === 'x' && e.shiftKey) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dispatch(ts.openExtensions())
+                    dispatch(ts.expandLeftSide())
+                    return
+                }
+
+                // Cmd+Shift+G — Source Control (Windows/Linux; Mac also via Ctrl below)
+                if (e.key === 'g' && e.shiftKey) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    dispatch(ts.openGit())
+                    dispatch(ts.expandLeftSide())
                     return
                 }
 
@@ -146,6 +174,15 @@ export function App() {
                     dispatch(ct.pressAICommand(e.key as 'Backspace' | 'Enter'))
                     return
                 }
+            }
+
+            // Mac Cursor uses Ctrl+Shift+G for Source Control
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'g') {
+                e.preventDefault()
+                e.stopPropagation()
+                dispatch(ts.openGit())
+                dispatch(ts.expandLeftSide())
+                return
             }
 
             // Escape key - Close popups

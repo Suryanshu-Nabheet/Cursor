@@ -348,12 +348,12 @@ export function applyThemeToRoot(theme: ThemeColors) {
         '--activity-bar-hover-bg',
         theme.itemHoverBackground
     )
-    root.style.setProperty('--activity-bar-gap', '6px')
-    root.style.setProperty('--activity-bar-padding-x', '16px')
+    root.style.setProperty('--activity-bar-gap', '2px')
+    root.style.setProperty('--activity-bar-padding-x', '6px')
     root.style.setProperty('--activity-bar-more-gap', '10px')
-    root.style.setProperty('--activity-bar-height', '42px')
-    root.style.setProperty('--activity-bar-item-size', '28px')
-    root.style.setProperty('--activity-bar-icon-size', '20px')
+    root.style.setProperty('--activity-bar-height', '35px')
+    root.style.setProperty('--activity-bar-item-size', '26px')
+    root.style.setProperty('--activity-bar-icon-size', '16px')
 
     // ═══════════════════════════════════════════════════════════════════════
     // TABS - Cursor IDE / VS Code

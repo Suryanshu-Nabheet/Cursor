@@ -294,6 +294,7 @@ export default function Editor({ tabId }: { tabId: number }) {
                         highlightActiveLine: false,
                         highlightActiveLineGutter: false,
                     }}
+                    indentWithTab={false}
                     className="window__editor"
                     height="100%"
                     onCreateEditor={(view: EditorView, _state: EditorState) => {

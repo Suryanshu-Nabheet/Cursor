@@ -337,21 +337,6 @@ export function triggerInlineCompletion(view: EditorView) {
 
 const ghostTextKeymap = keymap.of([
     {
-        key: 'Tab',
-        run: view => {
-            const ghost = view.state.field(ghostTextField, false)
-            if (ghost?.kind !== 'suggestion' || !ghost.text) return false
-            view.dispatch({
-                changes: { from: ghost.pos, insert: ghost.text },
-                effects: acceptGhostTextEffect.of(),
-                selection: { anchor: ghost.pos + ghost.text.length },
-                userEvent: 'input.complete',
-            })
-            cancelViewRequest(view)
-            return true
-        },
-    },
-    {
         key: 'Escape',
         run: view => {
             const ghost = view.state.field(ghostTextField, false)
@@ -387,4 +372,18 @@ export const ghostTextExtension = [
 export function hasGhostText(state: import('@codemirror/state').EditorState): boolean {
     const g = state.field(ghostTextField, false)
     return g?.kind === 'suggestion' && !!g.text
+}
+
+/** Accept visible ghost suggestion. Returns true if Tab was handled. */
+export function acceptGhostText(view: EditorView): boolean {
+    const ghost = view.state.field(ghostTextField, false)
+    if (ghost?.kind !== 'suggestion' || !ghost.text) return false
+    view.dispatch({
+        changes: { from: ghost.pos, insert: ghost.text },
+        effects: acceptGhostTextEffect.of(),
+        selection: { anchor: ghost.pos + ghost.text.length },
+        userEvent: 'input.complete',
+    })
+    cancelViewRequest(view)
+    return true
 }

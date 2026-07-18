@@ -98,11 +98,11 @@
     --activity-bar-active-bg: var(--black-subtle);
     --activity-bar-hover-bg: var(--black-subtle);
     --activity-bar-border: transparent;
-    --activity-bar-height: 42px;
-    --activity-bar-item-size: 28px;
-    --activity-bar-icon-size: 20px;
-    --activity-bar-gap: 6px;
-    --activity-bar-padding-x: 16px;
+    --activity-bar-height: 35px;
+    --activity-bar-item-size: 26px;
+    --activity-bar-icon-size: 16px;
+    --activity-bar-gap: 2px;
+    --activity-bar-padding-x: 6px;
     --activity-bar-more-gap: 10px;
 
     /* Tabs */
@@ -334,18 +334,22 @@ body {
 .status-bar__item {
     display: flex;
     align-items: center;
-    cursor: pointer;
     padding: 0 4px;
     height: 100%;
-    opacity: 0.8;
-    transition: opacity 0.2s, color 0.2s;
+    opacity: 0.85;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: default;
 }
 
-.status-bar__item:hover {
+.status-bar__item--action {
+    cursor: pointer;
+}
+
+.status-bar__item--action:active {
     opacity: 1;
-    color: var(--ui-fg);
-    background-color: var(--ui-hover);
-    border-radius: 2px;
 }
 
 .status-bar__item--main {
@@ -356,10 +360,6 @@ body {
     border-radius: 2px;
     opacity: 1;
     font-weight: 500;
-}
-
-.status-bar__item--main:hover {
-    background-color: var(--accent-hover);
 }
 
 .status-bar__center {

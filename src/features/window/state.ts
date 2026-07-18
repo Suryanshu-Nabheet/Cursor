@@ -348,6 +348,9 @@ export interface Settings {
     showScrollbarDiagnostics?: boolean
     autoSave?: 'off' | 'afterDelay'
     autoSaveDelay?: number
+    // Sidebar
+    pinnedSidebarViews?: Array<'filetree' | 'search' | 'git' | 'extensions'>
+    sidebarListExpanded?: boolean
     // AI extras
     workspaceContextEnabled?: boolean
     aiCommitDraftEnabled?: boolean
@@ -475,6 +478,8 @@ export const initialSettingsState = {
         showScrollbarDiagnostics: true,
         autoSave: 'off',
         autoSaveDelay: 1000,
+        pinnedSidebarViews: ['filetree', 'search', 'git', 'extensions'],
+        sidebarListExpanded: true,
         aiProvider: 'ollama',
         ollamaModel: 'qwen2.5-coder:1.5b',
         ollamaBaseUrl: 'http://localhost:11434',
