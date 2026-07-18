@@ -56,12 +56,7 @@ fi
 print_success "git $(git --version | awk '{print $3}') detected"
 
 print_info "Cleaning old build artifacts..."
-if [ -d .webpack ] || [ -d dist ] || [ -d out ]; then
-    rm -rf .webpack dist out
-    print_success "Cleaned old builds"
-else
-    print_info "No build artifacts to clean"
-fi
+bash "$ROOT/scripts/clean.sh"
 
 print_info "Installing npm dependencies..."
 if npm ci; then
@@ -89,13 +84,6 @@ else
     print_info ".env file already exists"
 fi
 
-print_info "Branding Electron binary as Cursor (Dock / menu name)..."
-if node scripts/brand-electron-dev.js; then
-    print_success "Electron binary branded as Cursor"
-else
-    print_info "Brand step skipped or failed (packaged builds still use forge icons)"
-fi
-
 echo ""
 echo "================================================"
 print_success "Cursor IDE setup completed successfully!"
@@ -103,8 +91,7 @@ echo "================================================"
 echo ""
 echo "Next steps:"
 echo "  1. Review and update .env file if needed"
-echo "  2. Quit any running Electron/Cursor instances"
-echo "  3. Run 'npm start' to launch Cursor IDE"
+echo "  2. Run 'npm start' to launch Cursor IDE"
 echo ""
 echo "For more information, see README.md"
 echo ""

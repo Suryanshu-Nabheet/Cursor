@@ -4,10 +4,9 @@ import { app, nativeImage } from 'electron'
 import log from 'electron-log'
 
 /**
- * Resolve the project/app icon for BrowserWindow + dock.
- * Packaged builds already embed the icon via forge packagerConfig;
- * this path is critical for `electron-forge start` (dev), where Electron
- * otherwise shows the default Electron icon.
+ * Resolve the app icon for BrowserWindow and macOS dock.
+ * Packaged builds embed icons via forge packagerConfig; this also
+ * resolves assets during local `electron-forge start`.
  */
 export function resolveAppIconPath(): string {
     const fileName = process.platform === 'win32' ? 'icon.ico' : 'icon.png'

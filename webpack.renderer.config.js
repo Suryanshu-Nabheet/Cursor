@@ -2,17 +2,15 @@ const path = require('path')
 const webpack = require('webpack')
 const rules = require('./webpack.rules')
 
+// Renderer must not use native-module relocators (those are main-only)
 const rendererRules = rules.filter((rule) => {
-    // Filter out rules that use @vercel/webpack-asset-relocator-loader or node-loader
     if (rule.use && typeof rule.use === 'object' && rule.use.loader) {
         return (
             !rule.use.loader.includes('@vercel/webpack-asset-relocator-loader') &&
             !rule.use.loader.includes('node-loader')
         )
     }
-    if (rule.use === 'node-loader') {
-        return false
-    }
+    if (rule.use === 'node-loader') return false
     return true
 })
 
@@ -33,10 +31,13 @@ rendererRules.push({
 })
 
 module.exports = {
-    // Put your normal webpack config below here
+    // Inject connector singleton into renderer modules
     plugins: [
         new webpack.ProvidePlugin({
-            connector: [path.resolve(__dirname, 'src/connector.ts'), 'connector'],
+            connector: [
+                path.resolve(__dirname, 'src/connector.ts'),
+                'connector',
+            ],
         }),
     ],
     module: {
@@ -53,4 +54,3 @@ module.exports = {
         extensions: ['.js', '.ts', '.jsx', '.tsx'],
     },
 }
-

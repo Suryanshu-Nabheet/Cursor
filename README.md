@@ -2,128 +2,90 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Version: 1.0.0](https://img.shields.io/badge/Version-1.0.0-emerald.svg?style=flat-square)](https://github.com/Suryanshu-Nabheet/cursor)
-[![Platform](https://img.shields.io/badge/Platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey.svg?style=flat-square)](#)
 
-A lightweight, from-scratch Electron IDE powered by CodeMirror, with AI completion, LSP, terminal, and OpenVSX extensions. Offline-first by default (Ollama).
+A lightweight Electron + CodeMirror IDE with AI completion, LSP, terminal, and OpenVSX extensions. Offline-first (Ollama by default).
 
-![Cursor IDE Demo](/public/demo.png)
+Copyright (c) 2026 Suryanshu Nabheet. MIT License.
 
 Repository: [github.com/Suryanshu-Nabheet/cursor](https://github.com/Suryanshu-Nabheet/cursor)
 
 ---
 
-## Features
-
-### Intelligence
-
-- AI inline ghost-text completion from the configured provider
-- AI chat sidebar with project tools (read/edit/search/terminal)
-- Language Server Protocol for diagnostics, hover, symbols, and definitions
-- Command bar (`Cmd/Ctrl + K`) for in-editor generation and edits
-
-### Editor and UI
-
-- CodeMirror 6 editor with Vim/Emacs modes
-- Themes including Cursor Dark, with instant switching
-- Configurable font family and size
-- Sidebars for files, search, git, and extensions
-
-### Tooling
-
-- Multi-tab integrated terminal (`node-pty` + xterm)
-- OpenVSX extension browse/install
-- Cross-platform packaging via Electron Forge
-
-### Privacy
-
-- Core workflow runs locally
-- Cloud AI providers are optional and key-gated in Settings
-
----
-
-## Quick start
-
-### Prerequisites
-
-- Node.js v18+
-- npm v9+
-- Git
-
-### Install
+## Run
 
 ```bash
 git clone https://github.com/Suryanshu-Nabheet/cursor.git
 cd cursor
-
-./scripts/setup.sh       # macOS/Linux
-# .\scripts\setup.ps1    # Windows
-# or: npm run setup / npm run setup:win
-
+npm run doctor         # check toolchain
+npm run setup          # install deps
 npm start
 ```
 
+Packaged app (Dock shows **Cursor**, not Electron):
+
+```bash
+npm run package
+# open the Cursor.app under out/
+```
+
+### Scripts
+
+| Command | What it does |
+| --- | --- |
+| `npm run doctor` | Verify Node, npm, git, electron, icons, Ollama |
+| `npm run setup` | Clean build artifacts + install dependencies |
+| `npm run clean` | Remove `.webpack`, `out`, logs, caches (keeps `node_modules` / LSP) |
+| `npm run reset` | Deep wipe: clean + `node_modules` + LSP downloads |
+| `npm run reset -- --with-userdata` | Also wipe Cursor app settings / extensions / logs |
+| `npm start` | Launch the IDE |
+| `npm test` | Run unit tests |
+| `npm run package` | Build a real **Cursor.app** / installer |
+
+Windows: `npm run setup:win`, `clean:win`, `reset:win`, `doctor:win`.
+
 ---
 
-## Keyboard shortcuts
+## Shortcuts
 
 | Action | Shortcut |
 | --- | --- |
 | Quick Open | `Cmd/Ctrl + P` |
 | Command Palette | `Cmd/Ctrl + Shift + P` |
-| Global Search | `Cmd/Ctrl + Shift + F` |
-| Toggle Terminal | `` Ctrl + ` `` |
-| Save All | `Cmd/Ctrl + Alt + S` |
+| Search | `Cmd/Ctrl + Shift + F` |
+| Terminal | `` Ctrl + ` `` |
 | AI Command Bar | `Cmd/Ctrl + K` |
-| Manual Inline Completion | `Cmd/Ctrl + Shift + Space` or `Alt + \` |
+| Inline completion | `Cmd/Ctrl + Shift + Space` or `Alt + \` |
 
 ---
 
-## Architecture
+## Stack
 
-- Electron
-- React 18 and Tailwind CSS
-- Redux Toolkit
-- CodeMirror 6
-- TypeScript
+Electron · React 18 · Redux Toolkit · CodeMirror 6 · TypeScript · Tailwind
+
+AI providers: Ollama (default), OpenAI, Claude, Gemini, OpenRouter — configure in Settings.
 
 ---
 
-## AI completion
+## Root config map
 
-Cursor 1.0.0 uses an AI-first completion stack:
-
-- Ghost text uses provider, editor, diagnostic, and open-file context
-- LSP remains for language intelligence (not a lexical completion fallback)
-
-Default provider is Ollama at `http://localhost:11434`. Cloud providers require an API key in Settings. See [docs/completion.md](docs/completion.md).
-
----
-
-## Language support
-
-- Web: JavaScript, TypeScript, HTML, CSS/SCSS, JSON
-- Systems: C, C++, Rust, Go
-- Backend: Python, Java, PHP, Ruby
-- Data: SQL, YAML, TOML, Markdown
-
----
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+| File | Purpose |
+| --- | --- |
+| `forge.config.js` | Electron Forge: app name, icons, packaging, webpack plugin, Dock branding on start |
+| `webpack.main.config.js` | Bundles the Electron **main** process (`src/main`) |
+| `webpack.renderer.config.js` | Bundles the **UI** (`src/index.ts` + React) |
+| `webpack.rules.js` | Shared loaders (TypeScript, Babel/React, assets, native modules) |
+| `postcss.config.js` | Tailwind + Autoprefixer for CSS |
+| `tailwind.config.js` | Utility CSS theme tokens |
+| `tsconfig.json` | TypeScript compiler options |
+| `.babelrc` | Babel preset for JSX/legacy JS in webpack |
+| `.prettierrc` / `.prettierignore` | Code formatting |
+| `jest.config.js` / `jest.ts-transformer.js` | Unit tests under `tests/` |
+| `.npmrc` | Font Awesome Pro registry (token via env) |
 
 ---
 
 ## License
 
-Copyright (c) 2026 Suryanshu Nabheet.
+Copyright (c) 2026 Suryanshu Nabheet. See [LICENSE](LICENSE).
 
-Released under the **MIT License**. Full text: [LICENSE](LICENSE).
-
----
-
-## Author
-
-**Suryanshu Nabheet**
-
-[GitHub](https://github.com/Suryanshu-Nabheet) · [LinkedIn](https://linkedin.com/in/suryanshu-nabheet)
+**Suryanshu Nabheet** — [GitHub](https://github.com/Suryanshu-Nabheet)

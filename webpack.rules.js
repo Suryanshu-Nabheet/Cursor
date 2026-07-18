@@ -1,8 +1,6 @@
 module.exports = [
-    // Add support for native node modules
+    // Native .node addons
     {
-        // We're specifying native_modules in the test because the asset relocator loader generates a
-        // "fake" .node file which is really a cjs file.
         test: /native_modules[/\\].+\.node$/,
         use: 'node-loader',
     },
@@ -16,6 +14,7 @@ module.exports = [
             },
         },
     },
+    // JSX (non-TS)
     {
         test: /\.jsx?$/,
         use: {
@@ -26,14 +25,13 @@ module.exports = [
             },
         },
     },
-    // Put your webpack loader rules in this array.  This is where you would put
-    // your ts-loader configuration for instance:
-    // Typescript Example:
+    // TypeScript / TSX
     {
         test: /\.tsx?$/,
         exclude: /(node_modules|.webpack)/,
         loader: 'ts-loader',
     },
+    // Static assets
     {
         test: /\.(png|svg|jpg|jpeg|gif|ttf)$/i,
         type: 'asset/resource',

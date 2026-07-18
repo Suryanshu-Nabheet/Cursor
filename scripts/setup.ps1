@@ -58,8 +58,7 @@ try {
 }
 
 Print-Info "Cleaning old build artifacts..."
-Remove-Item -Path ".webpack", "dist", "out" -Recurse -ErrorAction SilentlyContinue
-Print-Success "Cleaned old builds"
+& "$Root\scripts\clean.ps1"
 
 Print-Info "Installing npm dependencies..."
 try {
@@ -96,23 +95,13 @@ if (-not (Test-Path ".env")) {
 }
 
 Write-Host ""
-Print-Info "Branding Electron binary as Cursor..."
-try {
-    node scripts/brand-electron-dev.js
-    Print-Success "Electron binary branded as Cursor"
-} catch {
-    Print-Info "Brand step skipped (packaged builds still use forge icons)"
-}
-
-Write-Host ""
 Write-Host "================================================" -ForegroundColor Cyan
 Print-Success "Cursor IDE setup completed successfully!"
 Write-Host "================================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Review and update .env file if needed"
-Write-Host "  2. Quit any running Electron/Cursor instances"
-Write-Host "  3. Run 'npm start' to launch Cursor IDE"
+Write-Host "  2. Run 'npm start' to launch Cursor IDE"
 Write-Host ""
 Write-Host "For more information, see README.md"
 Write-Host ""
