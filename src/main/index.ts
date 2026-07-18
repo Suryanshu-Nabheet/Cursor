@@ -22,6 +22,14 @@ import { setupTestIndexer } from './testIndexer'
 
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true'
 
+// Brand before anything else. Packaged builds use forge packagerConfig;
+// in `npm start`, macOS Dock/menu identity also needs scripts/brand-electron-dev.js
+process.title = 'Cursor'
+app.setName('Cursor')
+if (process.platform === 'win32') {
+    app.setAppUserModelId('com.suryanshunabheet.cursor')
+}
+
 setupEnv()
 setupProtocal()
 setupSingleInstance()
@@ -29,6 +37,10 @@ setupAutoUpdater()
 setupLogger()
 
 app.on('ready', () => {
+    // Re-assert after ready (some Electron versions reset early name on macOS)
+    app.setName('Cursor')
+    process.title = 'Cursor'
+
     mainWindow.create()
     mainWindow.setup()
     mainWindow.load()

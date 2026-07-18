@@ -3,7 +3,7 @@
 * This things are generally very poorly documented, so it is always a pain to add a new feature
 * Right now, we have a single file source of truth here that acts like the client. We will probably
 * want to separate this all into separate subclasses that all inherit from the base LanguageServerClient
-* and each one has its own set of capabilities, features, etc that the lsp implements. Not sure if the 
+* and each one has its own set of capabilities, features, etc that the lsp implements. Not sure if the
 * right split is the file level for each of thesee
 
 * But there are lots of annoying things that differ across servers. They all need to support a few common

@@ -452,7 +452,7 @@ export const initialSettingsState = {
         useFour: 'disabled',
         textWrapping: 'disabled',
         tabSize: '4',
-        theme: 'codex-dark',
+        theme: 'cursor-dark',
         contextType: 'none',
         aiProvider: 'ollama',
         ollamaModel: 'qwen2.5-coder:1.5b',

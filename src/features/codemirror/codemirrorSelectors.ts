@@ -1,5 +1,5 @@
 /*
-* The idea with codemirror views is we actually have 
+* The idea with codemirror views is we actually have
 * multipled different stores
 
 * There is the redux store

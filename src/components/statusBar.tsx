@@ -217,7 +217,7 @@ export const StatusBar = () => {
 
             <div className="status-bar__center">
                 <span style={{ fontSize: '10px', opacity: 0.5 }}>
-                    © 2026 CodeX - Built By Suryanshu Nabheet
+                    Copyright (c) 2026 Suryanshu Nabheet · MIT · Cursor 1.0.0
                 </span>
             </div>
 

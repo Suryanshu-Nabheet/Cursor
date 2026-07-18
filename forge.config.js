@@ -1,15 +1,15 @@
 module.exports = {
     packagerConfig: {
-        name: 'CodeX',
-        icon: 'assets/icon/icon',
-        extraResource: [
-            './lsp',
-        ],
+        name: 'Cursor',
+        executableName: 'cursor',
+        appBundleId: 'com.suryanshunabheet.cursor',
+        icon: './assets/icon/icon',
+        extraResource: ['./lsp', './assets/icon/icon.png', './assets/icon/icon.ico'],
         osxSign: {},
         protocols: [
             {
-                name: 'CodeX',
-                schemes: ['codex'],
+                name: 'Cursor',
+                schemes: ['cursor'],
             },
         ],
     },
@@ -17,7 +17,12 @@ module.exports = {
     makers: [
         {
             name: '@electron-forge/maker-squirrel',
-            config: {},
+            config: {
+                name: 'Cursor',
+                setupIcon: './assets/icon/icon.ico',
+                iconUrl:
+                    'https://raw.githubusercontent.com/Suryanshu-Nabheet/cursor/main/assets/icon/icon.ico',
+            },
         },
         {
             name: '@electron-forge/maker-zip',
@@ -27,14 +32,29 @@ module.exports = {
             name: '@electron-forge/maker-deb',
             config: {
                 options: {
-                    icon: 'assets/icon/icon.png',
+                    name: 'cursor',
+                    productName: 'Cursor',
+                    genericName: 'Cursor IDE',
+                    description:
+                        'A lightweight, from-scratch Electron IDE powered by CodeMirror.',
+                    categories: ['Development'],
+                    icon: './assets/icon/icon.png',
+                    mimeType: ['x-scheme-handler/cursor'],
                 },
             },
         },
         {
-            name: '@electron-forge/maker-deb',
+            name: '@electron-forge/maker-rpm',
             config: {
-                mimeType: ['x-scheme-handler/codex'],
+                options: {
+                    name: 'cursor',
+                    productName: 'Cursor',
+                    genericName: 'Cursor IDE',
+                    description:
+                        'A lightweight, from-scratch Electron IDE powered by CodeMirror.',
+                    categories: ['Development'],
+                    icon: './assets/icon/icon.png',
+                },
             },
         },
     ],

@@ -33,7 +33,7 @@ import { diffExtension } from '../features/extensions/diff'
 import * as cs from '../features/chat/chatSlice'
 import * as ct from '../features/chat/chatThunks'
 
-import { getCodexTheme } from '../theme'
+import { getCursorTheme } from '../theme'
 import { getSettings } from '../features/settings/settingsSelectors'
 import { vim } from './codemirror-vim'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -145,7 +145,7 @@ export function CodeBlock({
                             : [],
                         await syntaxBundle(`text.${language}`),
                         extension,
-                        getCodexTheme(), // Get fresh theme from theme system
+                        getCursorTheme(), // Get fresh theme from theme system
                         EditorView.lineWrapping,
                     ],
                 })

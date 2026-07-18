@@ -6,8 +6,12 @@ export {
     TRANSITIONS,
     SPACING,
     RADIUS,
-    CODEX_THEME,
-    type CodexTheme,
+    CURSOR_THEME,
+    type CursorTheme,
 } from './tokens'
 
-export { getCodexTheme, codexTheme, default as codex } from './codexTheme'
+export {
+    getCursorTheme,
+    cursorTheme,
+    default as cursor,
+} from './cursorTheme'

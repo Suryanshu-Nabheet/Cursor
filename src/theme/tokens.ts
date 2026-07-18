@@ -331,7 +331,7 @@ export const RADIUS = {
     full: '9999px',
 } as const
 
-export const CODEX_THEME = {
+export const CURSOR_THEME = {
     base: BASE_TOKENS,
     semantic: SEMANTIC_TOKENS,
     component: COMPONENT_TOKENS,
@@ -341,4 +341,4 @@ export const CODEX_THEME = {
     radius: RADIUS,
 } as const
 
-export type CodexTheme = typeof CODEX_THEME
+export type CursorTheme = typeof CURSOR_THEME

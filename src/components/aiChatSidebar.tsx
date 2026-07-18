@@ -707,9 +707,9 @@ export function AIChatSidebar() {
 
     useEffect(() => {
         if (aiSidebarOpen && textareaRef.current) {
-            if ((window as any).__codexChatQuery) {
-                const query = (window as any).__codexChatQuery
-                delete (window as any).__codexChatQuery
+            if ((window as any).__cursorChatQuery) {
+                const query = (window as any).__cursorChatQuery
+                delete (window as any).__cursorChatQuery
                 setInput(query)
                 setTimeout(() => { if (query.trim() && !isGenerating) handleSend() }, 300)
             } else {

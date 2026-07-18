@@ -1,4 +1,4 @@
-// CodeX is a fully independent IDE
+// Cursor is a fully independent IDE
 import { connector } from './connector'
 import { getPlatformInfo as getPlatformInfoFromPlatform } from './platform'
 

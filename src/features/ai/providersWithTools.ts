@@ -168,8 +168,8 @@ export async function* streamAIResponseWithTools(
                 formattedTools,
                 'https://openrouter.ai/api/v1',
                 {
-                    'HTTP-Referer': 'https://codex-ide.com',
-                    'X-Title': 'CodeX IDE',
+                    'HTTP-Referer': 'https://github.com/Suryanshu-Nabheet/cursor',
+                    'X-Title': 'Cursor IDE',
                 },
                 options
             )

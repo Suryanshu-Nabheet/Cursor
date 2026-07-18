@@ -1,6 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import * as extensionsAPI from './extensionsAPI'
-import codexDarkTheme from '../../theme/themes/codex-dark.json'
+import cursorDarkTheme from '../../theme/themes/cursor-dark.json'
 import darkModernTheme from '../../theme/themes/dark-modern.json'
 import darkPlusTheme from '../../theme/themes/dark-plus.json'
 import lightModernTheme from '../../theme/themes/light-modern.json'
@@ -276,7 +276,7 @@ function mapThemeToThemeData(theme: any): ThemeData {
 }
 
 const defaultThemes: { [key: string]: ThemeData } = {
-    'codex-dark': mapThemeToThemeData(codexDarkTheme),
+    'cursor-dark': mapThemeToThemeData(cursorDarkTheme),
     'dark-modern': mapThemeToThemeData(darkModernTheme),
     'dark-plus': mapThemeToThemeData(darkPlusTheme),
     'light-modern': mapThemeToThemeData(lightModernTheme),
@@ -287,7 +287,7 @@ export const initialExtensionsState: ExtensionsState = {
     available: [],
     searchQuery: '',
     isSearching: false,
-    activeTheme: 'codex-dark',
+    activeTheme: 'cursor-dark',
     availableThemes: defaultThemes,
 }
 
@@ -364,11 +364,11 @@ export const uninstallExtension = createAsyncThunk(
 export const initializeExtensions = createAsyncThunk(
     'extensions/initialize',
     async (_, { dispatch }) => {
-        console.log('🔄 Initializing extensions...')
+        console.log('Initializing extensions...')
         // @ts-ignore
         const extensions: Extension[] = await connector.getInstalledExtensions()
         console.log(
-            `📦 Found ${extensions.length} installed extensions:`,
+            ` Found ${extensions.length} installed extensions:`,
             extensions.map((e) => e.name)
         )
         dispatch(loadInstalledExtensions(extensions))
@@ -403,14 +403,14 @@ export const initializeExtensions = createAsyncThunk(
             // @ts-ignore
             if (ext.contributes && ext.contributes.themes && ext.path) {
                 console.log(
-                    `🎨 Extension "${ext.name}" has themes:`,
+                    ` Extension "${ext.name}" has themes:`,
                     ext.contributes.themes
                 )
                 // @ts-ignore
                 for (const theme of ext.contributes.themes) {
                     try {
                         const themePath = [ext.path, theme.path].join(delimiter)
-                        console.log(`  Loading theme from: ${themePath}`)
+                        console.log(`Loading theme from: ${themePath}`)
                         // @ts-ignore
                         const content = await connector.getFile(themePath)
                         if (content) {
@@ -422,7 +422,7 @@ export const initializeExtensions = createAsyncThunk(
                                 ext.name ||
                                 'unknown-theme'
                             console.log(
-                                `  ✅ Successfully loaded theme: ${themeName}`
+                                `Successfully loaded theme: ${themeName}`
                             )
                             dispatch(
                                 addCustomTheme({
@@ -433,12 +433,12 @@ export const initializeExtensions = createAsyncThunk(
                             themesFound++
                         } else {
                             console.warn(
-                                `  ⚠️ No content found for theme at ${themePath}`
+                                `No content found for theme at ${themePath}`
                             )
                         }
                     } catch (e) {
                         console.error(
-                            `  ❌ Failed to load theme from ${ext.name}:`,
+                            `Failed to load theme from ${ext.name}:`,
                             e
                         )
                     }
@@ -449,7 +449,7 @@ export const initializeExtensions = createAsyncThunk(
             // @ts-ignore
             if (ext.contributes && ext.contributes.iconThemes) {
                 console.log(
-                    `🎨 Extension "${ext.name}" has icon themes:`,
+                    ` Extension "${ext.name}" has icon themes:`,
                     ext.contributes.iconThemes
                 )
             }

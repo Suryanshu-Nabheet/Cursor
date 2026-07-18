@@ -57,7 +57,7 @@ import * as LSP from 'vscode-languageserver-protocol'
 import { LanguageSupport, syntaxTree } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
 
-import { getCodexTheme } from '../../theme'
+import { getCursorTheme } from '../../theme'
 
 import { store } from '../../app/store'
 import { extensionActivationManager } from '../extensions/extensionActivation'
@@ -1057,7 +1057,7 @@ async function createCodeMirrorView(
         extensions: [
             syntax ?? [],
             EditorView.editable.of(false),
-            getCodexTheme(),
+            getCursorTheme(),
             EditorView.lineWrapping,
             EditorView.domEventHandlers({
                 click: (event, _view) => {

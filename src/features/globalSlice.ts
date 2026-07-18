@@ -72,7 +72,7 @@ import posthog from 'posthog-js'
 import { removeEditor } from './codemirror/codemirrorSlice'
 import { initializeChatState } from './chat/chatThunks'
 
-const BAD_DIRECTORIES = ['.git', 'node_modules', '.codex-config', '.webpack']
+const BAD_DIRECTORIES = ['.git', 'node_modules', '.cursor-config', '.webpack']
 
 export const gotoDefinition = createAsyncThunk(
     'global/gotoDefinition',

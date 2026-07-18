@@ -2,9 +2,9 @@ import { EditorView } from '@codemirror/view'
 import { Extension } from '@codemirror/state'
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { tags as t } from '@lezer/highlight'
-import { CODEX_THEME } from './tokens'
+import { CURSOR_THEME } from './tokens'
 
-const { typography } = CODEX_THEME
+const { typography } = CURSOR_THEME
 
 /**
  * Get color from CSS variable or fallback
@@ -65,7 +65,7 @@ function getThemeColors() {
  * CodeMirror theme - Dynamic from CSS variables
  * This function MUST be called fresh each time - it reads from store/theme system
  */
-export function getCodexTheme(): Extension {
+export function getCursorTheme(): Extension {
     const colors = getThemeColors()
 
     const editorTheme = EditorView.theme(
@@ -215,7 +215,7 @@ export function getCodexTheme(): Extension {
 
 // Legacy export - returns a basic theme that matches the CSS variables
 // This ensures we don't break imports, but the theme is still dynamic
-export const codexTheme: Extension = EditorView.theme(
+export const cursorTheme: Extension = EditorView.theme(
     {
         '&': {
             backgroundColor: 'var(--editor-bg)',
@@ -225,4 +225,4 @@ export const codexTheme: Extension = EditorView.theme(
     { dark: true }
 )
 
-export default codexTheme
+export default cursorTheme

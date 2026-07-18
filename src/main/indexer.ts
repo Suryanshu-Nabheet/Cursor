@@ -23,7 +23,7 @@ const PATHS_TO_IGNORE_REGEX: RegExp[] = [
     /.*\/\.venv\/.*/,
     /.*\/node_modules\/.*/,
     /.*\/__pycache__\/.*/,
-    /.*\/\.codex-config\/.*/,
+    /.*\/\.cursor-config\/.*/,
     /.*\/\.idea\/.*/,
     /.*\/\.vs\/.*/,
     /.*\/\.next\/.*/,

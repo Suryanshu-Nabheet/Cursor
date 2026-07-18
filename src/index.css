@@ -1194,30 +1194,30 @@ body {
     border: var(--scrollbar-track-border);
 }
 
-.typing-indicator-codex {
+.typing-indicator-cursor {
     display: flex;
     align-items: center;
     gap: 4px;
     padding: 8px 0;
 }
 
-.typing-indicator-codex span {
+.typing-indicator-cursor span {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--ui-fg-muted);
-    animation: typing-codex 1.4s infinite ease-in-out;
+    animation: typing-cursor 1.4s infinite ease-in-out;
 }
 
-.typing-indicator-codex span:nth-child(2) {
+.typing-indicator-cursor span:nth-child(2) {
     animation-delay: 0.2s;
 }
 
-.typing-indicator-codex span:nth-child(3) {
+.typing-indicator-cursor span:nth-child(3) {
     animation-delay: 0.4s;
 }
 
-@keyframes typing-codex {
+@keyframes typing-cursor {
 
     0%,
     60%,
@@ -2589,10 +2589,10 @@ input[type='file']::before {
 }
 
 /* .cm-subdiff-accept {
-   color: green 
+   color: green
 }
 .cm-subdiff-reject {
-   color: red 
+   color: red
 } */
 
 .not-windows-platform-shotcut-span-sm {
@@ -2820,7 +2820,7 @@ cm-diff-cancel>div {
 
 .multieditor {
     height: 100%;
-    /* background-color: var(--codex-theme-editor-background); */
+    /* background-color: var(--cursor-theme-editor-background); */
 }
 
 .multieditor__snippet_header {

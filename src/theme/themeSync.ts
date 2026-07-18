@@ -1,6 +1,6 @@
 /**
  * Centralized Theme Synchronization System
- * Single source of truth for all theme values in CodeX IDE
+ * Single source of truth for all theme values in Cursor IDE
  */
 
 import { Settings } from '../features/window/state'
@@ -437,9 +437,9 @@ export function applyThemeToRoot(theme: ThemeColors) {
     root.style.setProperty('--tab-not-active', theme.background)
     root.style.setProperty('--selection-match', theme.selection)
     root.style.setProperty('--button', theme.itemHoverBackground)
-    root.style.setProperty('--codex-theme-editor-background', theme.background)
-    root.style.setProperty('--codex-blue', '#007acc')
-    root.style.setProperty('--link-codex-blue', '#1ba1e2')
+    root.style.setProperty('--cursor-theme-editor-background', theme.background)
+    root.style.setProperty('--cursor-blue', '#007acc')
+    root.style.setProperty('--link-cursor-blue', '#1ba1e2')
     root.style.setProperty('--submit-button', '#28a745')
     root.style.setProperty('--reject-button', '#dc3545')
     root.style.setProperty(
@@ -492,17 +492,21 @@ export function syncThemeFromSettings(
     settings: Settings,
     availableThemes: any
 ) {
-    const themeName = settings.theme || 'codex-dark'
+    // Migrate pre-rebrand theme id
+    let themeName = settings.theme || 'cursor-dark'
+    if (themeName === 'codex-dark') {
+        themeName = 'cursor-dark'
+    }
     let theme = availableThemes[themeName]
 
-    // Force fallback to codex-dark if the requested theme is missing or invalid
+    // Force fallback to cursor-dark if the requested theme is missing or invalid
     if (!theme || !theme.colors) {
-        theme = availableThemes['codex-dark']
+        theme = availableThemes['cursor-dark']
     }
 
-    // Ultra-fallback if even codex-dark is missing from state (shouldn't happen if loaded correctly)
+    // Ultra-fallback if even cursor-dark is missing from state (shouldn't happen if loaded correctly)
     const c = theme?.colors || {
-        background: '#0a0a0a', // Matches codex-dark.json
+        background: '#0a0a0a', // Matches cursor-dark.json
         foreground: '#e5e5e5',
         cursor: '#3b82f6',
         selection: 'rgba(59, 130, 246, 0.25)',

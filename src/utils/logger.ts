@@ -1,5 +1,5 @@
 /**
- * Centralized logging system for CodeX
+ * Centralized logging system for Cursor
  * Provides structured logging with different levels and optional file output
  */
 

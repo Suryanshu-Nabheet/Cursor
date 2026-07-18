@@ -2,13 +2,13 @@
 
 
 :root {
-    
+
     --black-pure: #000000;           /* Pure black - main background */
     --black-soft: #0a0a0a;           /* Slightly lifted black */
     --black-elevated: #121212;       /* Elevated surfaces (sidebar, panels) */
     --black-subtle: #1a1a1a;         /* Hover states, inputs */
     --black-border: #1e1e1e;         /* Subtle borders */
-    
+
     /* Blue Accent - Primary interactive color */
     --blue-accent: #3b82f6;          /* Bright blue for buttons, selections */
     --blue-dim: #2563eb;             /* Darker blue for hover */
@@ -45,7 +45,7 @@
     --glass-border: rgba(255, 255, 255, 0.06);
     --glass-hover: rgba(255, 255, 255, 0.08);
     --glass-subtle: rgba(255, 255, 255, 0.05);
-    
+
     /* Typography */
     --font-mono: 'JetBrains Mono', 'Menlo', 'Monaco', 'Courier New', monospace;
     --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
@@ -261,7 +261,7 @@
     --input-background: var(--input-bg);
     --input-text: var(--input-fg);
     --chat-text: var(--ui-fg);
-    --codex-theme-editor-background: var(--editor-bg);
+    --cursor-theme-editor-background: var(--editor-bg);
     --submit-button: var(--button-success);
     --reject-button: var(--button-danger);
     --cancel-button: var(--button-secondary);

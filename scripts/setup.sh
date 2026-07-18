@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CodeX IDE Setup Script for macOS/Linux
+# Cursor IDE Setup Script for macOS/Linux
 # Run from anywhere: ./scripts/setup.sh
 
 set -e
@@ -9,7 +9,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT"
 
 echo "================================================"
-echo "  CodeX IDE Setup - macOS/Linux"
+echo "  Cursor IDE Setup - macOS/Linux"
 echo "================================================"
 echo ""
 
@@ -19,15 +19,15 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 print_success() {
-    echo -e "${GREEN}✓ $1${NC}"
+    echo -e "${GREEN}OK: $1${NC}"
 }
 
 print_error() {
-    echo -e "${RED}✗ $1${NC}"
+    echo -e "${RED}ERROR: $1${NC}"
 }
 
 print_info() {
-    echo -e "${YELLOW}ℹ $1${NC}"
+    echo -e "${YELLOW}INFO: $1${NC}"
 }
 
 if ! command -v node &> /dev/null; then
@@ -89,14 +89,22 @@ else
     print_info ".env file already exists"
 fi
 
+print_info "Branding Electron binary as Cursor (Dock / menu name)..."
+if node scripts/brand-electron-dev.js; then
+    print_success "Electron binary branded as Cursor"
+else
+    print_info "Brand step skipped or failed (packaged builds still use forge icons)"
+fi
+
 echo ""
 echo "================================================"
-print_success "CodeX IDE setup completed successfully!"
+print_success "Cursor IDE setup completed successfully!"
 echo "================================================"
 echo ""
 echo "Next steps:"
 echo "  1. Review and update .env file if needed"
-echo "  2. Run 'npm start' to launch CodeX IDE"
+echo "  2. Quit any running Electron/Cursor instances"
+echo "  3. Run 'npm start' to launch Cursor IDE"
 echo ""
 echo "For more information, see README.md"
 echo ""

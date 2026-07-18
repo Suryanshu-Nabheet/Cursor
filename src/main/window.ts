@@ -7,6 +7,7 @@ import {
     shell,
 } from 'electron'
 import log from 'electron-log'
+import { loadAppIconImage, resolveAppIconPath } from './appIcon'
 import { META_KEY } from './utils'
 
 export const MAIN_WINDOW_WIDTH = 1500
@@ -16,6 +17,9 @@ class MainWindow {
     public win: BrowserWindow | null = null
 
     create() {
+        const iconImage = loadAppIconImage()
+        const iconPath = resolveAppIconPath()
+
         this.win = new BrowserWindow({
             ...(process.platform === 'darwin'
                 ? {
@@ -28,7 +32,9 @@ class MainWindow {
             height: MAIN_WINDOW_HEIGHT,
             minWidth: MAIN_WINDOW_WIDTH / 2,
             minHeight: MAIN_WINDOW_HEIGHT / 2,
-            title: 'CodeX',
+            title: 'Cursor',
+            // Windows/Linux window icon; macOS uses the .icns from the app bundle when packaged
+            ...(iconImage ? { icon: iconImage } : { icon: iconPath }),
             webPreferences: {
                 // @ts-ignore
                 preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
@@ -40,6 +46,17 @@ class MainWindow {
                 webSecurity: false,
             },
         })
+
+        if (process.platform === 'darwin' && iconImage) {
+            app.dock?.setIcon(iconImage)
+            app.setAboutPanelOptions({
+                applicationName: 'Cursor',
+                applicationVersion: app.getVersion() || '1.0.0',
+                version: app.getVersion() || '1.0.0',
+                copyright: 'Copyright (c) 2026 Suryanshu Nabheet',
+                iconPath: resolveAppIconPath(),
+            })
+        }
     }
 
     setup() {
@@ -60,6 +77,11 @@ class MainWindow {
         // and load the index.html of the app.
         // @ts-ignore
         this.win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY)
+        this.win?.setTitle('Cursor')
+        this.win?.on('page-title-updated', (event) => {
+            event.preventDefault()
+            this.win?.setTitle('Cursor')
+        })
     }
 
     hasCrated() {

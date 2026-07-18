@@ -227,7 +227,7 @@ export const ExtensionsPane: React.FC = () => {
                                             <span className="ext-installed-badge">Installed</span>
                                         )}
                                         {justInstalled && (
-                                            <span className="ext-installed-badge ext-installed-badge--new">✓ Installed</span>
+                                            <span className="ext-installed-badge ext-installed-badge--new">Installed</span>
                                         )}
                                     </div>
                                     <span className="ext-item__publisher">{ext.publisher}</span>

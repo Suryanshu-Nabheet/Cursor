@@ -1,82 +1,67 @@
-# Contributing to CodeX IDE
+# Contributing to Cursor IDE
 
-Thank you for choosing to contribute to **CodeX IDE**. We are committed to building a world-class, professional coding environment, and your expertise is invaluable.
-
----
-
-## 💎 Excellence Standards
-
-CodeX is a premium product. We maintain high standards for all contributions:
-
--   **Quality**: Code must be robust, type-safe, and well-architected.
--   **Aesthetics**: UI changes must align with our monochromatic, professional design system.
--   **Performance**: Every feature must be optimized for speed and resource efficiency.
--   **Privacy**: We prioritize offline functionality and data security.
+Thank you for contributing to **Cursor IDE**. Contributions should meet the same bar as the product: correct, maintainable, and intentional.
 
 ---
 
-## 🚀 Getting Started
+## Standards
 
-1.  **Fork** the repository and create your feature branch.
-2.  **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/CodeX.git`
-3.  **Configure** upstream: `git remote add upstream https://github.com/Suryanshu-Nabheet/CodeX.git`
-4.  **Install** dependencies: `npm install`
-5.  **Initialize** build tools: `./scripts/setup.sh` (macOS/Linux), `.\scripts\setup.ps1` (Windows), or `npm run setup`
+- **Quality**: Type-safe, robust, and well-structured code.
+- **UI**: Match the existing monochromatic design system; no decorative noise.
+- **Performance**: Prefer fast paths; avoid unnecessary work on hot editor/render loops.
+- **Privacy**: Prefer offline-first behavior; do not leak secrets or user code.
 
 ---
 
-## 🛠️ Development Workflow
+## Getting started
 
-### Coding Standards
+1. Fork the repository and create a feature branch.
+2. Clone your fork: `git clone https://github.com/YOUR_USERNAME/cursor.git`
+3. Add upstream: `git remote add upstream https://github.com/Suryanshu-Nabheet/cursor.git`
+4. Install dependencies: `npm install`
+5. Bootstrap native deps: `./scripts/setup.sh` (macOS/Linux) or `.\scripts\setup.ps1` (Windows)
+6. Run: `npm start`
 
--   **TypeScript**: Mandatory for all logic. Follow strict typing patterns.
--   **Architecture**: Keep components focused. Business logic should reside in Redux slices or custom hooks.
--   **Linting**: Ensure all code passes `npm run lint`. Prefix intentionally unused variables with `_`.
--   **Styling**: Use CSS variables and maintain the professional monochromatic theme.
-
-### Verification
-
-Before submitting a Pull Request, ensure:
+Before opening a pull request:
 
 ```bash
-npm run format-check  # Verify code style
-npm run lint          # Check for logic errors
-npm test              # (If applicable) Run test suites
-npm start             # Verify runtime stability
+npm run format-check
+npm run lint
+npm test
+npm start
 ```
 
 ---
 
-## 📤 Pull Request Process
+## Pull requests
 
-1.  **Branch Naming**: Use descriptive names like `feat/advanced-fuzzy-search` or `fix/terminal-rendering`.
-2.  **Conventional Commits**: We follow [Conventional Commits](https://www.conventionalcommits.org/):
-    -   `feat:` for new capabilities.
-    -   `fix:` for bug resolutions.
-    -   `perf:` for performance enhancements.
-    -   `refactor:` for code structural improvements.
-3.  **Documentation**: Update `README.md` if your change impacts user behavior.
-4.  **Changelog**: Add a concise entry to `CHANGELOG.md` under the `[Unreleased]` section.
-
----
-
-## 🐛 Reporting Issues
-
-Use our dedicated templates for professional reports:
-
--   **Bug Reports**: Include exact steps to reproduce, environment details, and screenshots.
--   **Feature Requests**: Provide a clear rationale on how the feature enhances the professional developer experience.
+1. Use descriptive branch names (`feat/...`, `fix/...`).
+2. Follow [Conventional Commits](https://www.conventionalcommits.org/):
+   - `feat:` new capability
+   - `fix:` bug fix
+   - `perf:` performance
+   - `refactor:` structure without behavior change
+   - `docs:` documentation only
+3. Update `README.md` when user-facing behavior changes.
+4. Add a short note under `[Unreleased]` in `CHANGELOG.md`.
 
 ---
 
-## 💬 Community & Support
+## Issues
 
--   **Discussions**: [GitHub Discussions](https://github.com/Suryanshu-Nabheet/CodeX/discussions)
--   **Email Support**: suryanshunab@gmail.com
--   **Lead Developer**: Suryanshu Nabheet
+- **Bugs**: Steps to reproduce, expected vs actual, OS, and app version (`1.0.0`).
+- **Features**: Problem statement and why it belongs in Cursor.
 
 ---
 
-<p align="center">
-  <b>Thank you for helping us define the future of coding.</b> 🎉
-</p>
+## License
+
+By contributing, you agree that your contributions are licensed under the same **MIT License** as the project. Copyright (c) 2026 Suryanshu Nabheet.
+
+---
+
+## Contact
+
+- Discussions: [GitHub Discussions](https://github.com/Suryanshu-Nabheet/cursor/discussions)
+- Email: suryanshunab@gmail.com
+- Maintainer: Suryanshu Nabheet

@@ -32,14 +32,14 @@ export const regexpLinter = linter((view) => {
                     // Finished temp changes
                     severity: 'aiwarning',
                     message:
-                        'CodeX AI: Regular expressions should be used carefully',
+                        'Cursor AI: Regular expressions should be used carefully',
                     actions: [
                         {
                             name: 'Remove',
                             payload: [replace('')],
                         },
                     ],
-                    source: 'CodeX AI',
+                    source: 'Cursor AI',
                 })
             }
         })

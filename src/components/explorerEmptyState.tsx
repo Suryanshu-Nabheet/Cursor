@@ -50,10 +50,10 @@ export function ExplorerEmptyState() {
 
                     <p className="explorer-empty__footer">
                         To learn more about how to use Git and source control in
-                        CodeX{' '}
+                        Cursor{' '}
                         <a
                             className="explorer-empty__link"
-                            href="https://github.com/Suryanshu-Nabheet/CodeX"
+                            href="https://github.com/Suryanshu-Nabheet/cursor"
                             target="_blank"
                             rel="noreferrer"
                         >

@@ -3,7 +3,7 @@ import { EditorView, ViewUpdate } from '@codemirror/view'
 import { vimStateField } from './codemirror-vim/index'
 import { historyField } from '@codemirror/commands'
 import { EditorState } from '@codemirror/state'
-import { getCodexTheme } from '../theme'
+import { getCursorTheme } from '../theme'
 
 import CodeMirror, { ReactCodeMirrorRef } from './react-codemirror/index'
 import { throttleCallback } from './componentUtils'
@@ -265,7 +265,7 @@ export default function Editor({ tabId }: { tabId: number }) {
                     tabId={tabId}
                     key={filePath}
                     viewKey={tab.paneId}
-                    theme={getCodexTheme()}
+                    theme={getCursorTheme()}
                     ref={editorRef}
                     customDispatch={customDispatch}
                     autoFocus={isPaneActive && isRenaming == null}

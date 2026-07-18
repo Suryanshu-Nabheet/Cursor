@@ -1,4 +1,4 @@
-# CodeX IDE Setup Script for Windows
+# Cursor IDE Setup Script for Windows
 # Run from anywhere: .\scripts\setup.ps1
 
 $ErrorActionPreference = "Stop"
@@ -7,23 +7,23 @@ $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Root
 
 Write-Host "================================================" -ForegroundColor Cyan
-Write-Host "  CodeX IDE Setup - Windows" -ForegroundColor Cyan
+Write-Host "  Cursor IDE Setup - Windows" -ForegroundColor Cyan
 Write-Host "================================================" -ForegroundColor Cyan
 Write-Host ""
 
 function Print-Success {
     param([string]$Message)
-    Write-Host "✓ $Message" -ForegroundColor Green
+    Write-Host "OK: $Message" -ForegroundColor Green
 }
 
 function Print-Error {
     param([string]$Message)
-    Write-Host "✗ $Message" -ForegroundColor Red
+    Write-Host "ERROR: $Message" -ForegroundColor Red
 }
 
 function Print-Info {
     param([string]$Message)
-    Write-Host "ℹ $Message" -ForegroundColor Yellow
+    Write-Host "INFO: $Message" -ForegroundColor Yellow
 }
 
 try {
@@ -96,13 +96,23 @@ if (-not (Test-Path ".env")) {
 }
 
 Write-Host ""
+Print-Info "Branding Electron binary as Cursor..."
+try {
+    node scripts/brand-electron-dev.js
+    Print-Success "Electron binary branded as Cursor"
+} catch {
+    Print-Info "Brand step skipped (packaged builds still use forge icons)"
+}
+
+Write-Host ""
 Write-Host "================================================" -ForegroundColor Cyan
-Print-Success "CodeX IDE setup completed successfully!"
+Print-Success "Cursor IDE setup completed successfully!"
 Write-Host "================================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next steps:"
 Write-Host "  1. Review and update .env file if needed"
-Write-Host "  2. Run 'npm start' to launch CodeX IDE"
+Write-Host "  2. Quit any running Electron/Cursor instances"
+Write-Host "  3. Run 'npm start' to launch Cursor IDE"
 Write-Host ""
 Write-Host "For more information, see README.md"
 Write-Host ""

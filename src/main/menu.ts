@@ -4,8 +4,9 @@ import mainWindow from './window'
 
 export default function setupMainMenu() {
     let menuList: any[] = []
+    const appLabel = app.name || 'Cursor'
     const quitApp = {
-        label: 'Quit CodeX',
+        label: `Quit ${appLabel}`,
         click: () => {
             app.quit()
         },
@@ -13,8 +14,22 @@ export default function setupMainMenu() {
     }
     if (process.platform === 'darwin') {
         menuList.push({
-            label: 'CodeX',
-            submenu: [quitApp],
+            label: appLabel,
+            submenu: [
+                {
+                    label: `About ${appLabel}`,
+                    role: 'about',
+                },
+                { type: 'separator' },
+                {
+                    label: `Hide ${appLabel}`,
+                    role: 'hide',
+                },
+                { role: 'hideOthers' },
+                { role: 'unhide' },
+                { type: 'separator' },
+                quitApp,
+            ],
         })
     }
     menuList = menuList.concat([

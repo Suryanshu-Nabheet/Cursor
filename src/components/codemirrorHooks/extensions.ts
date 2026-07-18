@@ -478,7 +478,7 @@ export function useExtensions({
         // Get fresh theme data from store to ensure we have latest
         const state = store.getState()
         const themes = state.extensionsState.availableThemes
-        const currentThemeName = settings.theme || 'codex-dark'
+        const currentThemeName = settings.theme || 'cursor-dark'
         const themeData = themes[currentThemeName]
 
         if (themeData && themeData.colors) {

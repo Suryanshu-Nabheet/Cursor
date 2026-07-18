@@ -315,7 +315,7 @@ export function ToolCallCard({
                 <span className={`text-[14px] w-5 flex items-center justify-center ${getToolStatusColor()}`}>
                     {getToolIcon(toolName)}
                 </span>
-                
+
                 {getToolLabel(toolName, args)}
 
                 <div className="ml-auto flex items-center gap-3">

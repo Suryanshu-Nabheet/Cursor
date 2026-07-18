@@ -444,7 +444,7 @@ async function* streamOpenRouter(
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${apiKey}`,
                 'HTTP-Referer': window.location.origin,
-                'X-Title': 'CodeX',
+                'X-Title': 'Cursor',
             },
             body: JSON.stringify({
                 model,

@@ -43,14 +43,14 @@ export function WelcomeScreen() {
             <div className="w-full max-w-[500px] px-8">
                 {/* Header */}
                 <header className="welcome-header mb-12 text-center">
-                    <h1 className="welcome-title text-6xl mb-4">CodeX</h1>
+                    <h1 className="welcome-title text-6xl mb-4">Cursor</h1>
                     <div className="welcome-title-line h-px w-24 bg-[var(--border)] mx-auto mb-6"></div>
                     <p className="welcome-motto text-[var(--ui-fg-muted)] text-lg font-light">
                         Press{' '}
                         <kbd className="font-sans bg-[var(--ui-bg-elevated)] px-2 py-0.5 rounded border border-[var(--border)] text-sm text-[var(--foreground)]">
                             ⌘ K
                         </kbd>{' '}
-                        to unlock the power of CodeX AI
+                        to unlock the power of Cursor AI
                     </p>
                 </header>
 
@@ -131,7 +131,9 @@ export function WelcomeScreen() {
 
             {/* Footer */}
             <footer className="absolute bottom-4 flex gap-4 text-[10px] text-[var(--ui-fg-muted)] opacity-60">
-                <span>CodeX v{version || '1.0.0'}</span>
+                <span>Cursor v{version || '1.0.0'}</span>
+                <span>Copyright (c) 2026 Suryanshu Nabheet</span>
+                <span>MIT License</span>
             </footer>
         </div>
     )

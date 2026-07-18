@@ -296,7 +296,7 @@ export function TitleBar({
                     whiteSpace: 'nowrap',
                 }}
             >
-                CodeX - v{appVersion}
+                Cursor - v{appVersion}
             </div>
 
             <div

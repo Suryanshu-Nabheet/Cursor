@@ -1,13 +1,20 @@
 {
-    "homepage": "https://github.com/Suryanshu-Nabheet/CodeX",
-    "name": "codex",
+    "homepage": "https://github.com/Suryanshu-Nabheet/cursor",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Suryanshu-Nabheet/cursor.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Suryanshu-Nabheet/cursor/issues"
+    },
+    "name": "cursor",
     "author": {
         "name": "Suryanshu Nabheet",
         "email": "suryanshunab@gmail.com"
     },
-    "productName": "CodeX",
+    "productName": "Cursor",
     "version": "1.0.0",
-    "description": "CodeX: A high-performance, premium AI-powered IDE engineered for the modern developer by Suryanshu Nabheet.",
+    "description": "Cursor IDE — a lightweight Electron + CodeMirror editor with AI completion and LSP. Copyright (c) 2026 Suryanshu Nabheet. MIT License.",
     "main": ".webpack/main",
     "scripts": {
         "fix": "eslint --ext .ts,.tsx --fix .",
@@ -19,6 +26,9 @@
         "package": "electron-forge package",
         "precommit": "pretty-quick --staged",
         "prepare": "husky install",
+        "postinstall": "node scripts/brand-electron-dev.js",
+        "brand": "node scripts/brand-electron-dev.js",
+        "prestart": "node scripts/brand-electron-dev.js",
         "setup": "bash scripts/setup.sh",
         "setup:win": "powershell -ExecutionPolicy Bypass -File scripts/setup.ps1",
         "start": "electron-forge start",

@@ -1,11 +1,11 @@
 /**
- * Centralized error handling system for CodeX
+ * Centralized error handling system for Cursor
  * Provides consistent error handling and user-friendly error messages
  */
 
 import { logger } from './logger'
 
-export class CodeXError extends Error {
+export class CursorError extends Error {
     public readonly code: string
     public readonly userMessage: string
     public readonly originalError?: Error
@@ -17,14 +17,14 @@ export class CodeXError extends Error {
         originalError?: Error
     ) {
         super(message)
-        this.name = 'CodeXError'
+        this.name = 'CursorError'
         this.code = code
         this.userMessage = userMessage || message
         this.originalError = originalError
     }
 }
 
-export class FileSystemError extends CodeXError {
+export class FileSystemError extends CursorError {
     constructor(message: string, originalError?: Error) {
         super(
             message,
@@ -36,7 +36,7 @@ export class FileSystemError extends CodeXError {
     }
 }
 
-export class LSPError extends CodeXError {
+export class LSPError extends CursorError {
     constructor(message: string, originalError?: Error) {
         super(
             message,
@@ -48,7 +48,7 @@ export class LSPError extends CodeXError {
     }
 }
 
-export class NetworkError extends CodeXError {
+export class NetworkError extends CursorError {
     constructor(message: string, originalError?: Error) {
         super(
             message,
@@ -80,10 +80,10 @@ export class ErrorHandler {
     /**
      * Handle an error and log it appropriately
      */
-    public handle(error: Error | CodeXError, context?: string): void {
+    public handle(error: Error | CursorError, context?: string): void {
         const source = context || 'ErrorHandler'
 
-        if (error instanceof CodeXError) {
+        if (error instanceof CursorError) {
             logger.error(
                 `${error.code}: ${error.message}`,
                 {
@@ -108,14 +108,14 @@ export class ErrorHandler {
      * Handle an error and show a user-friendly notification
      */
     public handleWithNotification(
-        error: Error | CodeXError,
+        error: Error | CursorError,
         context?: string
     ): void {
         this.handle(error, context)
 
         // Show user-friendly error message
         const message =
-            error instanceof CodeXError
+            error instanceof CursorError
                 ? error.userMessage
                 : 'An unexpected error occurred'
 
@@ -170,7 +170,7 @@ export const errorHandler = ErrorHandler.getInstance()
 
 // Convenience function
 export const handleError = (
-    error: Error | CodeXError,
+    error: Error | CursorError,
     context?: string,
     showNotification = false
 ): void => {

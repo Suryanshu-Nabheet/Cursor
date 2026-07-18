@@ -185,7 +185,7 @@ export function SettingsPopup() {
                                 {activeTab === 'Languages' &&
                                     'Manage language server installations'}
                                 {activeTab === 'Account' &&
-                                    'Manage your CodeX account'}
+                                    'Manage your Cursor account'}
                             </p>
                         </div>
                         <button
@@ -226,7 +226,7 @@ export function SettingsPopup() {
 // --- General Settings ---
 function GeneralSettings({ settings, dispatch }: any) {
     const curatedThemes = [
-        { value: 'codex-dark', label: 'CodeX Dark', color: '#000000' },
+        { value: 'cursor-dark', label: 'Cursor Dark', color: '#000000' },
         { value: 'dark-modern', label: 'Dark Modern', color: '#1f1f1f' },
         { value: 'dark-plus', label: 'Dark Plus', color: '#1e1e1e' },
         { value: 'light-modern', label: 'Light Modern', color: '#ffffff' },
@@ -246,7 +246,7 @@ function GeneralSettings({ settings, dispatch }: any) {
                             label={theme.label}
                             color={theme.color}
                             isActive={
-                                (settings.theme || 'codex-dark') === theme.value
+                                (settings.theme || 'cursor-dark') === theme.value
                             }
                             onClick={() =>
                                 dispatch(changeSettings({ theme: theme.value }))
@@ -936,7 +936,7 @@ function AccountView() {
                 <FontAwesomeIcon icon={faUserCircle} />
             </div>
             <h2 className="text-base font-semibold text-[var(--ui-fg)] mb-2">
-                Sign in to CodeX
+                Sign in to Cursor
             </h2>
             <p className="text-[var(--ui-fg-muted)] text-center text-sm leading-relaxed mb-8">
                 Sync your settings and preferences across devices

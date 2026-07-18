@@ -64,7 +64,7 @@ class ExtensionActivationManager {
             return true
         }
 
-        console.log(`🔌 Activating extension: ${extId}`)
+        console.log(`Activating extension: ${extId}`)
 
         try {
             // Create extension context
@@ -136,7 +136,7 @@ class ExtensionActivationManager {
             ) => {
                 const fullCommandId = `${context.extensionId}.${commandId}`
                 this.commands.set(fullCommandId, callback)
-                console.log(`📝 Registered command: ${fullCommandId}`)
+                console.log(`Registered command: ${fullCommandId}`)
 
                 context.subscriptions.push({
                     dispose: () => this.commands.delete(fullCommandId),
@@ -153,12 +153,12 @@ class ExtensionActivationManager {
 
             // UI - Use browser notifications
             showInformationMessage: (message: string) => {
-                console.log(`ℹ️ [${context.extensionId}] ${message}`)
+                console.log(`ℹ [${context.extensionId}] ${message}`)
                 if (
                     'Notification' in window &&
                     Notification.permission === 'granted'
                 ) {
-                    new Notification('CodeX IDE', {
+                    new Notification('Cursor IDE', {
                         body: message,
                         icon: '/icon.png',
                     })
@@ -166,12 +166,12 @@ class ExtensionActivationManager {
             },
 
             showWarningMessage: (message: string) => {
-                console.warn(`⚠️ [${context.extensionId}] ${message}`)
+                console.warn(`[${context.extensionId}] ${message}`)
                 if (
                     'Notification' in window &&
                     Notification.permission === 'granted'
                 ) {
-                    new Notification('CodeX IDE - Warning', {
+                    new Notification('Cursor IDE - Warning', {
                         body: message,
                         icon: '/icon.png',
                     })
@@ -179,12 +179,12 @@ class ExtensionActivationManager {
             },
 
             showErrorMessage: (message: string) => {
-                console.error(`❌ [${context.extensionId}] ${message}`)
+                console.error(`[${context.extensionId}] ${message}`)
                 if (
                     'Notification' in window &&
                     Notification.permission === 'granted'
                 ) {
-                    new Notification('CodeX IDE - Error', {
+                    new Notification('Cursor IDE - Error', {
                         body: message,
                         icon: '/icon.png',
                     })
@@ -289,7 +289,7 @@ class ExtensionActivationManager {
                 }
 
                 console.log(
-                    `🤖 AI request from ${context.extensionId}:`,
+                    ` AI request from ${context.extensionId}:`,
                     prompt
                 )
 
@@ -317,7 +317,7 @@ class ExtensionActivationManager {
                     this.completionProviders.set(language, [])
                 }
                 this.completionProviders.get(language)!.push(provider)
-                console.log(`📝 Registered completion provider for ${language}`)
+                console.log(`Registered completion provider for ${language}`)
 
                 context.subscriptions.push({
                     dispose: () => {
@@ -335,7 +335,7 @@ class ExtensionActivationManager {
                     this.hoverProviders.set(language, [])
                 }
                 this.hoverProviders.get(language)!.push(provider)
-                console.log(`📝 Registered hover provider for ${language}`)
+                console.log(`Registered hover provider for ${language}`)
 
                 context.subscriptions.push({
                     dispose: () => {
@@ -354,7 +354,7 @@ class ExtensionActivationManager {
                 }
                 this.codeActionProviders.get(language)!.push(provider)
                 console.log(
-                    `📝 Registered code action provider for ${language}`
+                    ` Registered code action provider for ${language}`
                 )
 
                 context.subscriptions.push({
@@ -378,7 +378,7 @@ class ExtensionActivationManager {
         _context: ExtensionContext,
         api: ExtensionAPI
     ): Promise<void> {
-        console.log(`📦 Loading extension code for ${extension.name}`)
+        console.log(`Loading extension code for ${extension.name}`)
 
         // Check if extension has activation events
         if (extension.contributes) {
@@ -386,7 +386,7 @@ class ExtensionActivationManager {
             if (extension.contributes.commands) {
                 for (const command of extension.contributes.commands) {
                     console.log(
-                        `  Found command: ${command.command} - ${command.title}`
+                        `Found command: ${command.command} - ${command.title}`
                     )
                 }
             }
@@ -408,7 +408,7 @@ class ExtensionActivationManager {
 
                     if (mainFile) {
                         const mainFilePath = `${extension.path}/${mainFile}`
-                        console.log(`  Loading main file: ${mainFilePath}`)
+                        console.log(`Loading main file: ${mainFilePath}`)
 
                         // Read the extension's main JavaScript file
                         // @ts-ignore
@@ -454,29 +454,29 @@ class ExtensionActivationManager {
                                 ).activate
                                 if (typeof activate === 'function') {
                                     console.log(
-                                        `  ✅ Calling activate() for ${extension.name}`
+                                        `Calling activate() for ${extension.name}`
                                     )
                                     await activate(api)
                                 } else {
                                     console.log(
-                                        `  ⚠️ No activate() function found in ${extension.name}`
+                                        `No activate() function found in ${extension.name}`
                                     )
                                 }
                             } catch (error) {
                                 console.error(
-                                    `  ❌ Failed to execute extension code:`,
+                                    `Failed to execute extension code:`,
                                     error
                                 )
                             }
                         }
                     } else {
                         console.log(
-                            `  ℹ️ No main file specified in package.json`
+                            `  ℹ No main file specified in package.json`
                         )
                     }
                 }
             } catch (error) {
-                console.error(`  ❌ Failed to load extension:`, error)
+                console.error(`Failed to load extension:`, error)
             }
         }
     }

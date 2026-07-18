@@ -401,7 +401,7 @@ async function executeTool(
             }
 
             // 4. Return success
-            return `✓ Created and wrote to ${args.path}`
+            return `Created and wrote to ${args.path}`
         }
 
         case 'edit_file': {
@@ -430,7 +430,7 @@ async function executeTool(
                 await dispatch(actions.fileWasUpdated(fullPath))
             }
 
-            return `✓ Successfully edited ${args.path}`
+            return `Successfully edited ${args.path}`
         }
 
         case 'list_files': {
@@ -457,13 +457,13 @@ async function executeTool(
         case 'create_directory': {
             const fullPath = pathJoin(rootPath, args.path)
             await connector.saveFolder(fullPath)
-            return `✓ Created directory ${args.path}`
+            return `Created directory ${args.path}`
         }
 
         case 'delete_file': {
             const fullPath = pathJoin(rootPath, args.path)
             await connector.deleteFile(fullPath)
-            return `✓ Deleted ${args.path}`
+            return `Deleted ${args.path}`
         }
 
         case 'run_terminal_command': {
@@ -527,7 +527,7 @@ async function executeTool(
                     return `Error opening file: ${e}`
                 }
             }
-            return `✓ Opened ${args.path}`
+            return `Opened ${args.path}`
         }
 
         default:

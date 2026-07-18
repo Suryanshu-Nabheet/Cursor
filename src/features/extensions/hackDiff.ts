@@ -1,8 +1,8 @@
 /*
 This is a codemirror v6 implementation of inline diffs.
 
-There are state fields that store the information for the diffs present in a 
-block of code. 
+There are state fields that store the information for the diffs present in a
+block of code.
 */
 import { Extension, StateEffect, StateField } from '@codemirror/state'
 

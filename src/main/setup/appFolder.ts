@@ -8,7 +8,7 @@ export default function setupApplicationsFolder() {
         dialog.showMessageBoxSync(mainWindow.win!, {
             type: 'warning',
             title: 'Warning',
-            message: 'Please move CodeX to the Applications folder',
+            message: 'Please move Cursor to the Applications folder',
             detail: 'The app will not work properly if it is not in the Applications folder',
         })
     }

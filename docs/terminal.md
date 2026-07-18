@@ -1,6 +1,8 @@
 # Integrated Terminal
 
-CodeX uses `xterm` in the renderer and `node-pty` in the Electron main process for local integrated terminals.
+Copyright (c) 2026 Suryanshu Nabheet. MIT License.
+
+Cursor uses `xterm` in the renderer and `node-pty` in the Electron main process for local integrated terminals.
 
 ## Behavior
 
